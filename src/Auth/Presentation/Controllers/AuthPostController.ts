@@ -3,6 +3,7 @@ import { Controller, Post, Body, HttpCode } from '@nestjs/common';
 import { LoginUserUseCase } from '../../Application/LoginUserUseCase';
 import { RegisterUserUseCase } from '../../Application/RegisterUserUseCase';
 import { RegisterUserPayload } from '../../Domain/Payloads/RegisterUserPayload';
+import { UserTransformer } from '../Transformers/UserTransformer';
 
 @Controller('auth')
 export class AuthPostController
@@ -16,7 +17,7 @@ export class AuthPostController
   @HttpCode(201)
   async register(@Body() body: RegisterUserPayload)
   {
-    return await this.registerUserUseCase.execute(body);
+    return new UserTransformer(await this.registerUserUseCase.execute(body));
   }
 
   // @Post('login')

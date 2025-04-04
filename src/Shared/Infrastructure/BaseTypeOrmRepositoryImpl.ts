@@ -1,6 +1,5 @@
-// @ts-nocheck
 import { Injectable, Logger } from '@nestjs/common';
-import { FindOptionsWhere, ObjectLiteral, Repository } from 'typeorm';
+import { DeepPartial, ObjectLiteral, Repository } from 'typeorm';
 
 import { BaseRepository } from '../Domain/Repositories/BaseRepository';
 
@@ -17,11 +16,11 @@ export abstract class BaseTypeOrmRepositoryImpl<D, T extends ObjectLiteral> impl
     this.entityName = entityName;
   }
 
-  async create(entity: Partial<D>): Promise<T>
+  async create(entity: D): Promise<T>
   {
     try
     {
-      const newEntity = this.repository.create(entity as any);
+      const newEntity = this.repository.create(entity as DeepPartial<T>);
       return await this.repository.save(newEntity);
     }
     catch (error)
@@ -30,14 +29,11 @@ export abstract class BaseTypeOrmRepositoryImpl<D, T extends ObjectLiteral> impl
     }
   }
 
-  async createMany(entities: Partial<D>[]): Promise<T[]>
+  async createMany(entities: D[]): Promise<T[]>
   {
     try
     {
-      const newEntities = entities.map(entity =>
-        this.repository.create(entity as any)
-      );
-
+      const newEntities: T[] = this.repository.create(entities as DeepPartial<T>[]);
       return await this.repository.save(newEntities);
     }
     catch (error)
@@ -45,6 +41,7 @@ export abstract class BaseTypeOrmRepositoryImpl<D, T extends ObjectLiteral> impl
       this.handleTypeOrmError(error, 'createMany');
     }
   }
+
 
   async findOneBy<K extends keyof T>(fieldName: K, fieldValue: T[K]): Promise<T | null>
   {
@@ -76,24 +73,22 @@ export abstract class BaseTypeOrmRepositoryImpl<D, T extends ObjectLiteral> impl
 
   async update(id: string, data: Partial<T>): Promise<T>
   {
-    try
+    const result = await this.repository
+      .createQueryBuilder()
+      .update()
+      .set(data)
+      .where('id = :id', { id })
+      .returning('*')
+      .execute();
+
+    if (!result.raw || result.raw.length === 0)
     {
-      await this.repository.update(id, data);
-
-      const updated = await this.repository.findOne({ where: { id } as any });
-
-      if (!updated)
-      {
-        throw new Error(`Entity with id ${id} not found after update`);
-      }
-
-      return updated;
+      throw new Error(`Entity with id ${id} not found`);
     }
-    catch (error)
-    {
-      this.handleTypeOrmError(error, 'update');
-    }
+
+    return result.raw[0] as T;
   }
+
 
   async delete(id: string): Promise<void>
   {

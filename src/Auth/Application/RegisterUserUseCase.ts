@@ -4,6 +4,7 @@ import { Validator } from '../../Shared/Presentation/Validations/Validator';
 import { RegisterUserPayload } from '../Domain/Payloads/RegisterUserPayload';
 import { UserRepository } from '../Infrastructure/repositories/UserRepository';
 import { RegisterUserPayloadSchema } from '../Presentation/Validations/RegisterUserSchema';
+import { UserDomain } from '../Domain/Entities/UserDomain';
 
 @Injectable()
 export class RegisterUserUseCase extends Validator<RegisterUserPayload>
@@ -14,14 +15,10 @@ export class RegisterUserUseCase extends Validator<RegisterUserPayload>
     super(RegisterUserPayloadSchema);
   }
 
-  async execute(payload: RegisterUserPayload): Promise<RegisterUserPayload>
+  async execute(payload: RegisterUserPayload): Promise<UserDomain>
   {
     const data = this.validate(payload);
 
-    const user = await this.userRepository.create(data);
-
-    console.log(user);
-
-    return data;
+    return this.userRepository.create(data);
   }
 }
