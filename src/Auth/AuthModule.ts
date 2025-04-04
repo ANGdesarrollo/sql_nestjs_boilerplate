@@ -1,10 +1,12 @@
 // src/Auth/AuthModule.ts
 import { Module } from '@nestjs/common';
+import { DataSource } from 'typeorm';
 
 import { LoginUserUseCase } from './Application/LoginUserUseCase';
 import { RegisterUserUseCase } from './Application/RegisterUserUseCase';
 import { UpdateUserUseCase } from './Application/UpdateUserUseCase';
 import { UserRepository } from './Infrastructure/repositories/UserRepository';
+import { UserEntity } from './Infrastructure/schemas/UserSchema';
 import { AuthControllers } from './Presentation/Controllers';
 
 @Module({
@@ -14,7 +16,12 @@ import { AuthControllers } from './Presentation/Controllers';
     UserRepository,
     RegisterUserUseCase,
     LoginUserUseCase,
-    UpdateUserUseCase
+    UpdateUserUseCase,
+    {
+      provide: 'USER_REPOSITORY',
+      useFactory: (dataSource: DataSource) => dataSource.getRepository(UserEntity),
+      inject: ['DATA_SOURCE']
+    }
   ],
   exports: [UserRepository]
 })
