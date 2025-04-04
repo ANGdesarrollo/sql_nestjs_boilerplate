@@ -13,5 +13,8 @@ void (async() =>
     AppModule,
     new FastifyAdapter()
   );
-  await app.listen(process.env.PORT ?? 3000);
+
+  app.setGlobalPrefix('api');
+
+  await app.listen(process.env.PORT ?? 8000);
 })();

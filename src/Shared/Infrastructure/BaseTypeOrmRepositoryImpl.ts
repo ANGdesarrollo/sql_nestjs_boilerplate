@@ -1,64 +1,64 @@
+// @ts-nocheck
 import { Injectable, Logger } from '@nestjs/common';
+import { FindOptionsWhere, ObjectLiteral, Repository } from 'typeorm';
 
 import { BaseRepository } from '../Domain/Repositories/BaseRepository';
 
-import { PrismaService } from './DatabaseService';
-
 @Injectable()
-export abstract class BasePrismaRepositoryImpl<D, T> implements BaseRepository<D, T>
+export abstract class BaseTypeOrmRepositoryImpl<D, T extends ObjectLiteral> implements BaseRepository<D, T>
 {
+  protected readonly logger = new Logger(BaseTypeOrmRepositoryImpl.name);
+  protected readonly repository: Repository<T>;
   protected readonly entityName: string;
-  protected repository: PrismaService;
 
-  private readonly logger = new Logger(BasePrismaRepositoryImpl.name);
-
-  protected constructor(repository: PrismaService, entityName: string)
+  protected constructor(repository: Repository<T>, entityName: string)
   {
     this.repository = repository;
     this.entityName = entityName;
   }
 
-  async create(entity: D): Promise<T>
+  async create(entity: Partial<D>): Promise<T>
   {
     try
     {
-      return await this.repository[this.entityName].create({
-        data: entity
-      });
+      const newEntity = this.repository.create(entity as any);
+      return await this.repository.save(newEntity);
     }
     catch (error)
     {
-      this.handlePrismaError(error, 'create');
+      this.handleTypeOrmError(error, 'create');
     }
   }
 
-  async createMany(entities: D[]): Promise<T[]>
+  async createMany(entities: Partial<D>[]): Promise<T[]>
   {
     try
     {
-      return await this.repository[this.entityName].createMany({
-        data: entities
-      });
+      const newEntities = entities.map(entity =>
+        this.repository.create(entity as any)
+      );
+
+      return await this.repository.save(newEntities);
     }
     catch (error)
     {
-      this.handlePrismaError(error, 'createMany');
+      this.handleTypeOrmError(error, 'createMany');
     }
   }
 
-  async findOneBy<K extends keyof T>(fieldName: K, fieldValue: T[K]): Promise<T>
+  async findOneBy<K extends keyof T>(fieldName: K, fieldValue: T[K]): Promise<T | null>
   {
     try
     {
-      return await this.repository[this.entityName].findUniqueOrThrow({
-        where: {
-          [fieldName]: fieldValue
-        }
-      });
+      // Crear el objeto where dinámicamente y convertirlo para TypeORM
+      const where = {} as any;
+      where[fieldName] = fieldValue;
+
+      return await this.repository.findOne({ where });
     }
     catch (error)
     {
-      this.handlePrismaError(error, 'findOneBy');
+      this.handleTypeOrmError(error, 'findOneBy');
     }
   }
 
@@ -66,11 +66,11 @@ export abstract class BasePrismaRepositoryImpl<D, T> implements BaseRepository<D
   {
     try
     {
-      return await this.repository[this.entityName].findMany();
+      return await this.repository.find();
     }
     catch (error)
     {
-      this.handlePrismaError(error, 'list');
+      this.handleTypeOrmError(error, 'list');
     }
   }
 
@@ -78,29 +78,36 @@ export abstract class BasePrismaRepositoryImpl<D, T> implements BaseRepository<D
   {
     try
     {
-      return await this.repository[this.entityName].update({
-        where: {
-          id
-        },
-        data
-      });
+      await this.repository.update(id, data);
+
+      const updated = await this.repository.findOne({ where: { id } as any });
+
+      if (!updated)
+      {
+        throw new Error(`Entity with id ${id} not found after update`);
+      }
+
+      return updated;
     }
     catch (error)
     {
-      this.handlePrismaError(error, 'update');
+      this.handleTypeOrmError(error, 'update');
     }
   }
 
-  async delete(id: string)
+  async delete(id: string): Promise<void>
   {
-    return this.repository[this.entityName].delete({
-      where: {
-        id
-      }
-    });
+    try
+    {
+      await this.repository.delete(id);
+    }
+    catch (error)
+    {
+      this.handleTypeOrmError(error, 'delete');
+    }
   }
 
-  protected handlePrismaError(error: any, operation: string): never
+  protected handleTypeOrmError(error: any, operation: string): never
   {
     const message = `[${this.entityName}] Failed to execute ${operation}: ${error.message}`;
     this.logger.error(message);
