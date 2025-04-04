@@ -5,7 +5,7 @@ import {
   NestFastifyApplication
 } from '@nestjs/platform-fastify';
 
-import { AppModule } from './app.module';
+import { AppModule } from './App/AppModule';
 
 void (async() =>
 {
