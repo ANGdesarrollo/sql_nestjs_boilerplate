@@ -1,3 +1,4 @@
+import { BadRequestException } from '@nestjs/common';
 import { z } from 'zod';
 
 export abstract class Validator<T>
@@ -16,7 +17,10 @@ export abstract class Validator<T>
 
     if (!result.success)
     {
-      throw new Error(`Validation error: ${JSON.stringify(result.error.format())}`);
+      throw new BadRequestException({
+        message: 'Validation failed',
+        errors: result.error.format()
+      });
     }
 
     return result.data;
