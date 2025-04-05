@@ -1,8 +1,10 @@
 import { PassportStrategy } from '@nestjs/passport';
-import { Strategy } from 'passport-jwt';
+import { ExtractJwt, Strategy } from 'passport-jwt';
 
-export class JwtStrategy extends PassportStrategy<Strategy> {
-  constructor() {
+export class JwtStrategy extends PassportStrategy<Strategy>
+{
+  constructor()
+  {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
