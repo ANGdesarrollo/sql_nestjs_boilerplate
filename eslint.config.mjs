@@ -126,6 +126,7 @@ export default tseslint.config(
       '@typescript-eslint/no-shadow': 'error',
       '@typescript-eslint/no-unused-vars': 'warn',
       '@typescript-eslint/no-empty-interface': 'off',
+      '@typescript-eslint/no-empty-object-type': 'off',
       '@typescript-eslint/no-unsafe-return': 'off',
       '@typescript-eslint/restrict-template-expressions': 'off',
       '@typescript-eslint/unbound-method': 'off',

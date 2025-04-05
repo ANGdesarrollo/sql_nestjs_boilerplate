@@ -1,4 +1,3 @@
-export interface RegisterUserPayload {
-  username: string;
-  password: string;
-}
+import { UserPayload } from './UserPayload';
+
+export interface RegisterUserPayload extends UserPayload {}
