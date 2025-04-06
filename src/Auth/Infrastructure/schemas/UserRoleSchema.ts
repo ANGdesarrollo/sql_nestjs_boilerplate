@@ -1,20 +1,22 @@
 import { Entity, PrimaryGeneratedColumn, ManyToOne, JoinColumn, CreateDateColumn } from 'typeorm';
-import { UserEntity } from './UserSchema';
+
 import { RoleEntity } from './RoleSchema';
+import { UserEntity } from './UserSchema';
 
 @Entity('user_roles')
-export class UserRoleEntity {
+export class UserRoleEntity
+{
   @PrimaryGeneratedColumn('uuid')
-  id: string;
+    id: string;
 
   @ManyToOne(() => UserEntity, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'user_id' })
-  user: UserEntity;
+    user: UserEntity;
 
   @ManyToOne(() => RoleEntity, { onDelete: 'CASCADE', eager: true })
   @JoinColumn({ name: 'role_id' })
-  role: RoleEntity;
+    role: RoleEntity;
 
   @CreateDateColumn({ name: 'created_at' })
-  createdAt: Date;
+    createdAt: Date;
 }

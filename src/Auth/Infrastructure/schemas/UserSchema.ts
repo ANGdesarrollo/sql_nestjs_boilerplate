@@ -1,4 +1,7 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, OneToMany } from 'typeorm';
+
+import { UserPermissionEntity } from './UserPermissionSchema';
+import { UserRoleEntity } from './UserRoleSchema';
 
 @Entity('users')
 export class UserEntity
@@ -11,6 +14,12 @@ export class UserEntity
 
   @Column()
     password: string;
+
+  @OneToMany(() => UserRoleEntity, userRole => userRole.user)
+    userRoles: UserRoleEntity[];
+
+  @OneToMany(() => UserPermissionEntity, userPermission => userPermission.user)
+    userPermissions: UserPermissionEntity[];
 
   @CreateDateColumn({ name: 'created_at' })
     createdAt: Date;

@@ -1,8 +1,11 @@
-// src/Shared/Infrastructure/DatabaseConnection.ts
 import { DataSource } from 'typeorm';
 
+import { PermissionEntity } from '../../Auth/Infrastructure/schemas/PermissionSchema';
+import { RoleEntity } from '../../Auth/Infrastructure/schemas/RoleSchema';
+import { UserRoleEntity } from '../../Auth/Infrastructure/schemas/UserRoleSchema';
 import { UserEntity } from '../../Auth/Infrastructure/schemas/UserSchema';
 import { EnvService } from '../../Config/Env/EnvService';
+import { UserPermissionEntity } from '../../Auth/Infrastructure/schemas/UserPermissionSchema';
 
 export const DatabaseConnections = [
   {
@@ -17,7 +20,13 @@ export const DatabaseConnections = [
         username: configService.database.username,
         password: configService.database.password,
         database: configService.database.name,
-        entities: [UserEntity],
+        entities: [
+          UserEntity,
+          RoleEntity,
+          PermissionEntity,
+          UserRoleEntity,
+          UserPermissionEntity
+        ],
         synchronize: !configService.isProduction,
         logging: !configService.isProduction
       });

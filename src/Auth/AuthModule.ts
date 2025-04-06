@@ -8,7 +8,11 @@ import { EnvService } from '../Config/Env/EnvService';
 import { AuthUseCases } from './Application';
 import { HashService } from './Domain/Services/HashService';
 import { JwtStrategy } from './Domain/Strategies/JwtStrategy';
-import { UserRepository } from './Infrastructure/repositories/UserRepository';
+import { AuthRepositories } from './Infrastructure/repositories';
+import { PermissionEntity } from './Infrastructure/schemas/PermissionSchema';
+import { RoleEntity } from './Infrastructure/schemas/RoleSchema';
+import { UserPermissionEntity } from './Infrastructure/schemas/UserPermissionSchema';
+import { UserRoleEntity } from './Infrastructure/schemas/UserRoleSchema';
 import { UserEntity } from './Infrastructure/schemas/UserSchema';
 import { AuthControllers } from './Presentation/Controllers';
 
@@ -26,14 +30,35 @@ import { AuthControllers } from './Presentation/Controllers';
   controllers: [...AuthControllers],
   providers: [
     ...AuthUseCases,
-    UserRepository,
+    ...AuthRepositories,
     JwtStrategy,
     HashService,
     {
       provide: 'USER_REPOSITORY',
       useFactory: (dataSource: DataSource) => dataSource.getRepository(UserEntity),
       inject: ['DATA_SOURCE']
+    },
+    {
+      provide: 'ROLE_REPOSITORY',
+      useFactory: (dataSource: DataSource) => dataSource.getRepository(RoleEntity),
+      inject: ['DATA_SOURCE']
+    },
+    {
+      provide: 'PERMISSION_REPOSITORY',
+      useFactory: (dataSource: DataSource) => dataSource.getRepository(PermissionEntity),
+      inject: ['DATA_SOURCE']
+    },
+    {
+      provide: 'USER_ROLE_REPOSITORY',
+      useFactory: (dataSource: DataSource) => dataSource.getRepository(UserRoleEntity),
+      inject: ['DATA_SOURCE']
+    },
+    {
+      provide: 'USER_PERMISSION_REPOSITORY',
+      useFactory: (dataSource: DataSource) => dataSource.getRepository(UserPermissionEntity),
+      inject: ['DATA_SOURCE']
     }
-  ]
+  ],
+  exports: []
 })
 export class AuthModule {}

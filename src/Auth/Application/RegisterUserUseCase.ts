@@ -10,7 +10,10 @@ import { RegisterUserPayloadSchema } from '../Presentation/Validations/RegisterU
 @Injectable()
 export class RegisterUserUseCase extends Validator<RegisterUserPayload>
 {
-  constructor(private readonly userRepository: UserRepository, private readonly hashService: HashService)
+  constructor(
+    private readonly userRepository: UserRepository,
+    private readonly hashService: HashService
+  )
   {
     super(RegisterUserPayloadSchema);
   }
@@ -21,6 +24,8 @@ export class RegisterUserUseCase extends Validator<RegisterUserPayload>
 
     data.password = await this.hashService.hash(data.password);
 
-    return this.userRepository.create(data);
+    const newUser = await this.userRepository.create(data);
+
+    return newUser;
   }
 }

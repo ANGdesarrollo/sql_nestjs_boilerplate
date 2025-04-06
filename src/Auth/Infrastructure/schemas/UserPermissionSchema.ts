@@ -1,4 +1,3 @@
-// src/Auth/Infrastructure/schemas/UserPermissionSchema.ts
 import { Entity, PrimaryGeneratedColumn, ManyToOne, JoinColumn, CreateDateColumn } from 'typeorm';
 
 import { PermissionEntity } from './PermissionSchema';
