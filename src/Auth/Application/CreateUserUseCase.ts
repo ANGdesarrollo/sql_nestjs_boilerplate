@@ -10,6 +10,7 @@ import { TenantRepository } from '../Infrastructure/repositories/TenantRepositor
 import { UserRepository } from '../Infrastructure/repositories/UserRepository';
 import { UserTenantRepository } from '../Infrastructure/repositories/UserTenantRepository';
 import { CreateUserPayloadSchema } from '../Presentation/Validations/CreateUserSchema';
+import { CreateUserPayload } from '../Domain/Payloads/CreateUserPayload';
 
 interface CreateUserWithTenantsResult {
   user: UserDomain;
@@ -17,7 +18,7 @@ interface CreateUserWithTenantsResult {
 }
 
 @Injectable()
-export class CreateUserUseCase extends Validator<UserPayload>
+export class CreateUserUseCase extends Validator<CreateUserPayload>
 {
   constructor(
     private readonly userRepository: UserRepository,
@@ -34,7 +35,7 @@ export class CreateUserUseCase extends Validator<UserPayload>
    * @param payload The user creation payload
    * @returns The created user with their tenant associations
    */
-  async execute(payload: UserPayload): Promise<CreateUserWithTenantsResult>
+  async execute(payload: CreateUserPayload): Promise<CreateUserWithTenantsResult>
   {
     // Validate input data
     const data = this.validate(payload);
