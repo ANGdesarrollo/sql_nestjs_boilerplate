@@ -2,6 +2,7 @@ import { AssignUserToTenantUseCase } from './AssignUserToTenantUseCase';
 import { CreateSuperUserUseCase } from './CreateSuperUserUseCase';
 import { CreateTenantUseCase } from './CreateTenantUseCase';
 import { CreateUserUseCase } from './CreateUserUseCase';
+import { GetUserUseCase } from './GetUserUseCase';
 import { LoginUserUseCase } from './LoginUserUseCase';
 import { SetDefaultTenantUseCase } from './SetDefaultTenantUseCase';
 import { SyncRolesUseCase } from './SyncRolesUseCase';
@@ -15,5 +16,6 @@ export const AuthUseCases = [
   CreateSuperUserUseCase,
   CreateTenantUseCase,
   AssignUserToTenantUseCase,
-  SetDefaultTenantUseCase
+  SetDefaultTenantUseCase,
+  GetUserUseCase
 ];

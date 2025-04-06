@@ -1,18 +1,13 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 
+import { JwtPayload } from '../Domain/Payloads/JwtPayload';
 import { LoginUserPayload } from '../Domain/Payloads/LoginUserPayload';
 import { HashService } from '../Domain/Services/HashService';
+import { UserPermissionRepository } from '../Infrastructure/repositories/UserPermissionRepository';
 import { UserRepository } from '../Infrastructure/repositories/UserRepository';
 import { UserRoleRepository } from '../Infrastructure/repositories/UserRoleRepository';
 import { UserTenantRepository } from '../Infrastructure/repositories/UserTenantRepository';
-
-interface JwtPayload {
-  username: string;
-  userId: string;
-  tenantId: string;
-  permissions: string[];
-}
 
 @Injectable()
 export class LoginUserUseCase
@@ -21,6 +16,7 @@ export class LoginUserUseCase
     private readonly userRepository: UserRepository,
     private readonly userRoleRepository: UserRoleRepository,
     private readonly userTenantRepository: UserTenantRepository,
+    private readonly userPermissionRepository: UserPermissionRepository,
     private readonly jwtService: JwtService,
     private readonly hashService: HashService
   ) {}
@@ -45,6 +41,12 @@ export class LoginUserUseCase
       {
         permissions.add(permission.name);
       });
+    });
+
+    const userPermissions = await this.userPermissionRepository.getUserPermissions(user.id);
+    userPermissions.forEach(userPermission =>
+    {
+      permissions.add(userPermission.permission.name);
     });
 
     const payload: JwtPayload = {
