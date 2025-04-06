@@ -1,33 +1,33 @@
-import { Controller, Post, Body, HttpCode, Res } from '@nestjs/common';
-import { UseGuards } from '@nestjs/common';
+import { Controller, Post, Body, HttpCode, Res, UseGuards } from '@nestjs/common';
 import { FastifyReply } from 'fastify';
 
 import { EnvService } from '../../../Config/Env/EnvService';
+import { Permissions } from '../../../Config/Permissions';
 import { CreateUserUseCase } from '../../Application/CreateUserUseCase';
 import { LoginUserUseCase } from '../../Application/LoginUserUseCase';
 import { CreateUserPayload } from '../../Domain/Payloads/CreateUserPayload';
 import { LoginUserPayload } from '../../Domain/Payloads/LoginUserPayload';
-import { JwtGuard } from '../Guards/JwtGuard';
-import { UserTransformer } from '../Transformers/UserTransformer';
+// Ahora importamos RequirePermissions desde el mismo archivo que AuthGuard
+import { AuthGuard, RequirePermissions } from '../Guards/AuthGuard';
 
 @Controller('auth')
 export class AuthPostController
 {
   constructor(
-    private readonly registerUserUseCase: CreateUserUseCase,
+    private readonly createUserUseCase: CreateUserUseCase,
     private readonly loginUserUseCase: LoginUserUseCase,
     private readonly configService: EnvService
   ) {}
 
-  @UseGuards(JwtGuard)
-  @Post('register')
+  @UseGuards(AuthGuard)
+  @RequirePermissions(Permissions.USER.CREATE)
+  @Post('create')
   @HttpCode(201)
-  async register(@Body() body: CreateUserPayload)
+  async createUser(@Body() body: CreateUserPayload)
   {
-    return this.registerUserUseCase.execute(body);
+    return this.createUserUseCase.execute(body);
   }
 
-  // En AuthPostController.ts
   @Post('login')
   @HttpCode(200)
   async login(

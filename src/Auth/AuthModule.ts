@@ -1,13 +1,11 @@
 import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
-import { PassportModule } from '@nestjs/passport';
 import { DataSource } from 'typeorm';
 
 import { EnvService } from '../Config/Env/EnvService';
 
 import { AuthUseCases } from './Application';
 import { HashService } from './Domain/Services/HashService';
-import { JwtStrategy } from './Domain/Strategies/JwtStrategy';
 import { AuthRepositories } from './Infrastructure/repositories';
 import { PermissionEntity } from './Infrastructure/schemas/PermissionSchema';
 import { RoleEntity } from './Infrastructure/schemas/RoleSchema';
@@ -19,10 +17,10 @@ import { UserTenantEntity } from './Infrastructure/schemas/UserTenantSchema';
 import { CreateSuperUserCliCommand } from './Presentation/Commands/CreateSuperUserCliCommand';
 import { SyncRolesCliCommand } from './Presentation/Commands/SyncRolesCliCommand';
 import { AuthControllers } from './Presentation/Controllers';
+import { AuthGuard } from './Presentation/Guards/AuthGuard';
 
 @Module({
   imports: [
-    PassportModule.register({ defaultStrategy: 'jwt', session: false }),
     JwtModule.registerAsync({
       inject: [EnvService],
       useFactory: (envService: EnvService) => ({
@@ -35,8 +33,8 @@ import { AuthControllers } from './Presentation/Controllers';
   providers: [
     ...AuthUseCases,
     ...AuthRepositories,
-    JwtStrategy,
     HashService,
+    AuthGuard,
     SyncRolesCliCommand,
     CreateSuperUserCliCommand,
     {
@@ -75,6 +73,6 @@ import { AuthControllers } from './Presentation/Controllers';
       inject: ['DATA_SOURCE']
     }
   ],
-  exports: []
+  exports: [AuthGuard, JwtModule]
 })
 export class AuthModule {}
