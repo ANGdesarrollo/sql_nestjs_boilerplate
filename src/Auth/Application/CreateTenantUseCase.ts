@@ -1,7 +1,6 @@
 import { Injectable, ConflictException } from '@nestjs/common';
 
 import { Validator } from '../../Shared/Presentation/Validations/Validator';
-import { TenantDomain } from '../Domain/Entities/TenantDomain';
 import { TenantPayload } from '../Domain/Payloads/TenantPayload';
 import { TenantRepository } from '../Infrastructure/repositories/TenantRepository';
 import { TenantPayloadSchema } from '../Presentation/Validations/TenantSchema';
@@ -16,7 +15,7 @@ export class CreateTenantUseCase extends Validator<TenantPayload>
     super(TenantPayloadSchema);
   }
 
-  async execute(payload: TenantPayload): Promise<TenantDomain>
+  async execute(payload: TenantPayload): Promise<void>
   {
     const data = this.validate(payload);
 
@@ -32,8 +31,6 @@ export class CreateTenantUseCase extends Validator<TenantPayload>
       throw new ConflictException(`Tenant with slug '${data.slug}' already exists`);
     }
 
-    const newTenant = await this.tenantRepository.create(data);
-
-    return newTenant;
+    await this.tenantRepository.create(data);
   }
 }

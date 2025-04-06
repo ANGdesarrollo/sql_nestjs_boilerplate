@@ -25,6 +25,14 @@ export const Permissions = {
     ASSIGN: 'permission:assign'
   },
 
+  TENANT: {
+    CREATE: 'tenant:create',
+    READ: 'tenant:read',
+    UPDATE: 'tenant:update',
+    DELETE: 'tenant:delete',
+    LIST: 'tenant:list'
+  },
+
   AUTH: {
     LOGIN: 'auth:login',
     REGISTER: 'auth:register',
@@ -32,7 +40,6 @@ export const Permissions = {
     CHANGE_PASSWORD: 'auth:change-password'
   }
 };
-
 export const getAllPermissions = (): string[] =>
 {
   const permissionsList: string[] = [];
