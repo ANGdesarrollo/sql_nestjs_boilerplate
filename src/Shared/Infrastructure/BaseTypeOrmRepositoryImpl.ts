@@ -1,5 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { DeepPartial, ObjectLiteral, Repository } from 'typeorm';
+import { DeepPartial, EntityManager, ObjectLiteral, Repository } from 'typeorm';
 
 import { BaseRepository } from '../Domain/Repositories/BaseRepository';
 
@@ -108,5 +108,13 @@ export abstract class BaseTypeOrmRepositoryImpl<D, T extends ObjectLiteral> impl
     this.logger.error(message);
 
     throw new Error(message);
+  }
+
+  withTransaction(manager: EntityManager): this
+  {
+    const newRepository = manager.getRepository<T>(this.repository.target);
+    const newInstance = Object.create(this.constructor.prototype);
+    (this.constructor as any).call(newInstance, newRepository, this.entityName);
+    return newInstance;
   }
 }

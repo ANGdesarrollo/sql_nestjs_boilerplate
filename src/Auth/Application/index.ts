@@ -1,5 +1,5 @@
-import { LoginUserUseCase } from './LoginUserUseCase';
 import { CreateUserUseCase } from './CreateUserUseCase';
+import { LoginUserUseCase } from './LoginUserUseCase';
 import { SyncRolesUseCase } from './SyncRolesUseCase';
 import { UpdateUserUseCase } from './UpdateUserUseCase';
 

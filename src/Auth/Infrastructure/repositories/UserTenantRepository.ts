@@ -11,7 +11,7 @@ export class UserTenantRepository extends BaseTypeOrmRepositoryImpl<UserTenantPa
 {
   constructor(
     @Inject('USER_TENANT_REPOSITORY')
-    userTenantRepository: Repository<UserTenantEntity>
+      userTenantRepository: Repository<UserTenantEntity>
   )
   {
     super(userTenantRepository, 'UserTenantEntity');

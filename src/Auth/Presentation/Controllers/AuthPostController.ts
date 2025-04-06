@@ -3,10 +3,10 @@ import { UseGuards } from '@nestjs/common';
 import { FastifyReply } from 'fastify';
 
 import { EnvService } from '../../../Config/Env/EnvService';
-import { LoginUserUseCase } from '../../Application/LoginUserUseCase';
 import { CreateUserUseCase } from '../../Application/CreateUserUseCase';
-import { LoginUserPayload } from '../../Domain/Payloads/LoginUserPayload';
+import { LoginUserUseCase } from '../../Application/LoginUserUseCase';
 import { CreateUserPayload } from '../../Domain/Payloads/CreateUserPayload';
+import { LoginUserPayload } from '../../Domain/Payloads/LoginUserPayload';
 import { JwtGuard } from '../Guards/JwtGuard';
 import { UserTransformer } from '../Transformers/UserTransformer';
 
