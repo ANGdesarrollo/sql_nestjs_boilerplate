@@ -4,7 +4,7 @@ import { FastifyReply } from 'fastify';
 
 import { EnvService } from '../../../Config/Env/EnvService';
 import { LoginUserUseCase } from '../../Application/LoginUserUseCase';
-import { RegisterUserUseCase } from '../../Application/RegisterUserUseCase';
+import { CreateUserUseCase } from '../../Application/CreateUserUseCase';
 import { LoginUserPayload } from '../../Domain/Payloads/LoginUserPayload';
 import { RegisterUserPayload } from '../../Domain/Payloads/RegisterUserPayload';
 import { JwtGuard } from '../Guards/JwtGuard';
@@ -14,7 +14,7 @@ import { UserTransformer } from '../Transformers/UserTransformer';
 export class AuthPostController
 {
   constructor(
-    private readonly registerUserUseCase: RegisterUserUseCase,
+    private readonly registerUserUseCase: CreateUserUseCase,
     private readonly loginUserUseCase: LoginUserUseCase,
     private readonly configService: EnvService
   ) {}

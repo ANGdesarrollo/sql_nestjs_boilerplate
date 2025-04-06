@@ -8,7 +8,7 @@ import { UserRepository } from '../Infrastructure/repositories/UserRepository';
 import { RegisterUserPayloadSchema } from '../Presentation/Validations/RegisterUserSchema';
 
 @Injectable()
-export class RegisterUserUseCase extends Validator<RegisterUserPayload>
+export class CreateUserUseCase extends Validator<RegisterUserPayload>
 {
   constructor(
     private readonly userRepository: UserRepository,
