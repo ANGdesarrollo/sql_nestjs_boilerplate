@@ -11,9 +11,11 @@ import { JwtStrategy } from './Domain/Strategies/JwtStrategy';
 import { AuthRepositories } from './Infrastructure/repositories';
 import { PermissionEntity } from './Infrastructure/schemas/PermissionSchema';
 import { RoleEntity } from './Infrastructure/schemas/RoleSchema';
+import { TenantEntity } from './Infrastructure/schemas/TenantSchema';
 import { UserPermissionEntity } from './Infrastructure/schemas/UserPermissionSchema';
 import { UserRoleEntity } from './Infrastructure/schemas/UserRoleSchema';
 import { UserEntity } from './Infrastructure/schemas/UserSchema';
+import { UserTenantEntity } from './Infrastructure/schemas/UserTenantSchema';
 import { SyncRolesCliCommand } from './Presentation/Commands/SyncRolesCliCommand';
 import { AuthControllers } from './Presentation/Controllers';
 
@@ -58,6 +60,16 @@ import { AuthControllers } from './Presentation/Controllers';
     {
       provide: 'USER_PERMISSION_REPOSITORY',
       useFactory: (dataSource: DataSource) => dataSource.getRepository(UserPermissionEntity),
+      inject: ['DATA_SOURCE']
+    },
+    {
+      provide: 'TENANT_REPOSITORY',
+      useFactory: (dataSource: DataSource) => dataSource.getRepository(TenantEntity),
+      inject: ['DATA_SOURCE']
+    },
+    {
+      provide: 'USER_TENANT_REPOSITORY',
+      useFactory: (dataSource: DataSource) => dataSource.getRepository(UserTenantEntity),
       inject: ['DATA_SOURCE']
     }
   ],

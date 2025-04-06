@@ -21,10 +21,8 @@ export class SyncRolesUseCase
     {
       this.logger.log('Starting roles and permissions synchronization');
 
-      // 1. Sincronizar permisos
       await this.syncPermissions();
 
-      // 2. Sincronizar roles con sus permisos
       await this.syncRoles();
 
       this.logger.log('Roles and permissions synchronized successfully');

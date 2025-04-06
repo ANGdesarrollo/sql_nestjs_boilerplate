@@ -2,6 +2,7 @@ import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateCol
 
 import { UserPermissionEntity } from './UserPermissionSchema';
 import { UserRoleEntity } from './UserRoleSchema';
+import { UserTenantEntity } from './UserTenantSchema';
 
 @Entity('users')
 export class UserEntity
@@ -20,6 +21,9 @@ export class UserEntity
 
   @OneToMany(() => UserPermissionEntity, userPermission => userPermission.user)
     userPermissions: UserPermissionEntity[];
+
+  @OneToMany(() => UserTenantEntity, userTenant => userTenant.user)
+    userTenants: UserTenantEntity[];
 
   @CreateDateColumn({ name: 'created_at' })
     createdAt: Date;
