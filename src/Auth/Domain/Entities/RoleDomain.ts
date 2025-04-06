@@ -1,11 +1,6 @@
 import { BaseId } from 'src/Shared/Domain/Entities/BaseId';
 
 import { BaseTimeStamp } from '../../../Shared/Domain/Entities/BaseTimeStamp';
+import { RolePayload } from '../Payloads/RolePayload';
 
-import { PermissionDomain } from './PermissionDomain';
-
-export interface RoleDomain extends BaseId, BaseTimeStamp {
-  name: string;
-  description?: string;
-  permissions: PermissionDomain[];
-}
+export interface RoleDomain extends RolePayload, BaseId, BaseTimeStamp {}

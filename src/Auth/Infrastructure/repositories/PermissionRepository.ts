@@ -3,9 +3,10 @@ import { Repository } from 'typeorm';
 
 import { BaseTypeOrmRepositoryImpl } from '../../../Shared/Infrastructure/BaseTypeOrmRepositoryImpl';
 import { PermissionDomain } from '../../Domain/Entities/PermissionDomain';
+import { PermissionPayload } from '../../Domain/Payloads/PermissionPayload';
 
 @Injectable()
-export class PermissionRepository extends BaseTypeOrmRepositoryImpl<Partial<PermissionDomain>, PermissionDomain>
+export class PermissionRepository extends BaseTypeOrmRepositoryImpl<PermissionPayload, PermissionDomain>
 {
   constructor(
     @Inject('PERMISSION_REPOSITORY')

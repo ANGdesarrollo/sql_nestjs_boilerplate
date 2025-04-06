@@ -4,9 +4,10 @@ import { Repository } from 'typeorm';
 import { BaseTypeOrmRepositoryImpl } from '../../../Shared/Infrastructure/BaseTypeOrmRepositoryImpl';
 import { PermissionDomain } from '../../Domain/Entities/PermissionDomain';
 import { RoleDomain } from '../../Domain/Entities/RoleDomain';
+import { RolePayload } from '../../Domain/Payloads/RolePayload';
 
 @Injectable()
-export class RoleRepository extends BaseTypeOrmRepositoryImpl<Partial<RoleDomain>, RoleDomain>
+export class RoleRepository extends BaseTypeOrmRepositoryImpl<RolePayload, RoleDomain>
 {
   constructor(
     @Inject('ROLE_REPOSITORY')

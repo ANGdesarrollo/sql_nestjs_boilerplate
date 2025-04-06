@@ -1,10 +1,6 @@
 import { BaseId } from 'src/Shared/Domain/Entities/BaseId';
 
-import { PermissionDomain } from './PermissionDomain';
-import { UserDomain } from './UserDomain';
+import { BaseTimeStamp } from '../../../Shared/Domain/Entities/BaseTimeStamp';
+import { UserPermissionPayload } from '../Payloads/UserPermissionPayload';
 
-export interface UserPermissionDomain extends BaseId {
-  user: UserDomain;
-  permission: PermissionDomain;
-  createdAt: Date;
-}
+export interface UserPermissionDomain extends UserPermissionPayload, BaseId, Pick<BaseTimeStamp, 'createdAt'> {}
