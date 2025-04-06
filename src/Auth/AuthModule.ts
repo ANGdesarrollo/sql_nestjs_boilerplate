@@ -14,6 +14,7 @@ import { RoleEntity } from './Infrastructure/schemas/RoleSchema';
 import { UserPermissionEntity } from './Infrastructure/schemas/UserPermissionSchema';
 import { UserRoleEntity } from './Infrastructure/schemas/UserRoleSchema';
 import { UserEntity } from './Infrastructure/schemas/UserSchema';
+import { SyncRolesCliCommand } from './Presentation/Commands/SyncRolesCliCommand';
 import { AuthControllers } from './Presentation/Controllers';
 
 @Module({
@@ -33,6 +34,7 @@ import { AuthControllers } from './Presentation/Controllers';
     ...AuthRepositories,
     JwtStrategy,
     HashService,
+    SyncRolesCliCommand,
     {
       provide: 'USER_REPOSITORY',
       useFactory: (dataSource: DataSource) => dataSource.getRepository(UserEntity),

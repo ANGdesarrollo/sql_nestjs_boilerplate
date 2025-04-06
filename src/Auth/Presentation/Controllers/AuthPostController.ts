@@ -27,6 +27,7 @@ export class AuthPostController
     return new UserTransformer(await this.registerUserUseCase.execute(body));
   }
 
+  // En AuthPostController.ts
   @Post('login')
   @HttpCode(200)
   async login(
@@ -35,7 +36,8 @@ export class AuthPostController
   )
   {
     const data = await this.loginUserUseCase.execute(body);
-    res.setCookie('user_token', data, {
+
+    (res as any).setCookie('user_token', data, {
       httpOnly: true,
       path: '/',
       expires: new Date(Date.now() + this.configService.cookie.expiration),
