@@ -1,13 +1,17 @@
-import { Injectable, CanActivate, ExecutionContext, UnauthorizedException, ForbiddenException, SetMetadata } from '@nestjs/common';
+import { Injectable, CanActivate, ExecutionContext, UnauthorizedException, ForbiddenException } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { JwtService } from '@nestjs/jwt';
 
-// Clave para los metadatos de permiso
-export const PERMISSIONS_KEY = 'permissions';
+import { PERMISSIONS_KEY } from '../Decorators/RequirePermissions';
 
-// Decorador para asignar permisos a un controlador o método
-export const RequirePermissions = (...permissions: string[]) =>
-  SetMetadata(PERMISSIONS_KEY, permissions);
+interface JwtPayload {
+  userId: string;
+  username: string;
+  tenantId: string;
+  permissions: string[];
+  iat: number;
+  exp: number;
+}
 
 @Injectable()
 export class AuthGuard implements CanActivate
@@ -39,16 +43,21 @@ export class AuthGuard implements CanActivate
 
     try
     {
-      const decodedToken = this.jwtService.verify(token);
+      const decodedToken = this.jwtService.verify<JwtPayload>(token);
 
       request.user = decodedToken;
 
-      const hasPermissions = this.hasRequiredPermissions(
+      if (!decodedToken.permissions || !Array.isArray(decodedToken.permissions))
+      {
+        throw new UnauthorizedException('Invalid token format: missing permissions');
+      }
+
+      const hasPermission = this.checkPermissions(
         decodedToken.permissions,
         requiredPermissions
       );
 
-      if (!hasPermissions)
+      if (!hasPermission)
       {
         throw new ForbiddenException('Insufficient permissions to access this resource');
       }
@@ -61,6 +70,7 @@ export class AuthGuard implements CanActivate
       {
         throw error;
       }
+
       throw new UnauthorizedException('Invalid authentication token');
     }
   }
@@ -81,13 +91,13 @@ export class AuthGuard implements CanActivate
     return null;
   }
 
-  private hasRequiredPermissions(
+  private checkPermissions(
     userPermissions: string[],
     requiredPermissions: string[]
   ): boolean
   {
     return requiredPermissions.every(permission =>
-      userPermissions && userPermissions.includes(permission)
+      userPermissions.includes(permission)
     );
   }
 }
