@@ -1,0 +1,120 @@
+import { Injectable, ConflictException, BadRequestException, Inject } from '@nestjs/common';
+import { DataSource } from 'typeorm';
+
+import { EnvService } from '../../Config/Env/EnvService';
+import { Roles } from '../../Config/Roles';
+import { HashService } from '../Domain/Services/HashService';
+import { RoleRepository } from '../Infrastructure/repositories/RoleRepository';
+import { TenantRepository } from '../Infrastructure/repositories/TenantRepository';
+import { UserRepository } from '../Infrastructure/repositories/UserRepository';
+import { UserRoleRepository } from '../Infrastructure/repositories/UserRoleRepository';
+import { UserTenantRepository } from '../Infrastructure/repositories/UserTenantRepository';
+
+interface SuperUserConfig {
+  username: string;
+  password: string;
+  tenantName: string;
+  tenantSlug: string;
+}
+
+@Injectable()
+export class CreateSuperUserUseCase
+{
+  constructor(
+    private readonly userRepository: UserRepository,
+    private readonly tenantRepository: TenantRepository,
+    private readonly userTenantRepository: UserTenantRepository,
+    private readonly roleRepository: RoleRepository,
+    private readonly userRoleRepository: UserRoleRepository,
+    private readonly hashService: HashService,
+    @Inject('DATA_SOURCE') private readonly dataSource: DataSource
+  ) {}
+
+  async execute(config?: Partial<SuperUserConfig>): Promise<void>
+  {
+    // Default configuration
+    const superUserConfig: SuperUserConfig = {
+      username: config?.username || 'superadmin',
+      password: config?.password || this._generateRandomPassword(),
+      tenantName: config?.tenantName || 'System',
+      tenantSlug: config?.tenantSlug || 'system'
+    };
+
+    await this.dataSource.transaction(async(manager) =>
+    {
+      // Get transactional repositories
+      const userRepo = this.userRepository.withTransaction(manager);
+      const tenantRepo = this.tenantRepository.withTransaction(manager);
+      const userTenantRepo = this.userTenantRepository.withTransaction(manager);
+      const roleRepo = this.roleRepository.withTransaction(manager);
+      const userRoleRepo = this.userRoleRepository.withTransaction(manager);
+
+      // Check if super admin role exists
+      const superAdminRole = await roleRepo.findOneBy('name', Roles.SUPER_ADMIN);
+      if (!superAdminRole)
+      {
+        throw new BadRequestException('Super admin role not found. Make sure to run the sync:roles command first');
+      }
+
+      // Create or get system tenant
+      const existingTenant = await tenantRepo.findBySlug(superUserConfig.tenantSlug);
+      const tenant = existingTenant || await tenantRepo.create({
+        name: superUserConfig.tenantName,
+        slug: superUserConfig.tenantSlug,
+        description: 'System tenant for super administrators'
+      });
+
+      // Check if user already exists
+      const existingUser = await userRepo.findOneBy('username', superUserConfig.username);
+      if (existingUser)
+      {
+        console.log(`Super user '${superUserConfig.username}' already exists`);
+        return;
+      }
+
+      // Create user
+      const hashedPassword = await this.hashService.hash(superUserConfig.password);
+      const user = await userRepo.create({
+        username: superUserConfig.username,
+        password: hashedPassword
+      });
+
+      // Create user-tenant relation
+      await userTenantRepo.create({
+        userId: user.id,
+        tenantId: tenant.id,
+        isDefault: true
+      });
+
+      // Assign super admin role
+      await userRoleRepo.create({
+        user,
+        role: superAdminRole
+      });
+
+      console.log('Super user created successfully');
+      if (!config?.password)
+      {
+        console.log('======================================================');
+        console.log('Super User Created with the following credentials:');
+        console.log(`Username: ${superUserConfig.username}`);
+        console.log(`Password: ${superUserConfig.password}`);
+        console.log('======================================================');
+        console.log('Please change this password after your first login');
+      }
+    });
+  }
+
+  private _generateRandomPassword(length = 12): string
+  {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()';
+    let password = '';
+
+    for (let i = 0; i < length; i++)
+    {
+      password += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+
+    return password;
+  }
+}

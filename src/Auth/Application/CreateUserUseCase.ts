@@ -1,4 +1,4 @@
-import { Injectable, ConflictException, BadRequestException } from '@nestjs/common';
+import { Injectable, ConflictException, BadRequestException, Inject } from '@nestjs/common';
 import { DataSource, EntityManager } from 'typeorm';
 
 import { Roles } from '../../Config/Roles';
@@ -31,7 +31,7 @@ export class CreateUserUseCase extends Validator<CreateUserPayload>
     private readonly roleRepository: RoleRepository,
     private readonly userRoleRepository: UserRoleRepository,
     private readonly hashService: HashService,
-    private readonly dataSource: DataSource
+    @Inject('DATA_SOURCE') private readonly dataSource: DataSource
   )
   {
     super(CreateUserPayloadSchema);

@@ -24,7 +24,7 @@ export class AuthPostController
   @HttpCode(201)
   async register(@Body() body: CreateUserPayload)
   {
-    return new UserTransformer(await this.registerUserUseCase.execute(body));
+    return this.registerUserUseCase.execute(body);
   }
 
   // En AuthPostController.ts

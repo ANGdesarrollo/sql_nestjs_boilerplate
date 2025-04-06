@@ -112,9 +112,19 @@ export abstract class BaseTypeOrmRepositoryImpl<D, T extends ObjectLiteral> impl
 
   withTransaction(manager: EntityManager): this
   {
-    const newRepository = manager.getRepository<T>(this.repository.target);
-    const newInstance = Object.create(this.constructor.prototype);
-    (this.constructor as any).call(newInstance, newRepository, this.entityName);
-    return newInstance;
+    try
+    {
+      const newRepository = manager.getRepository<T>(this.repository.target);
+
+      const repoClass = this.constructor as any;
+      const newInstance = new repoClass(newRepository, this.entityName);
+
+      return newInstance;
+    }
+    catch (error)
+    {
+      this.logger.error(`Error creating transactional repository: ${error.message}`);
+      throw error;
+    }
   }
 }

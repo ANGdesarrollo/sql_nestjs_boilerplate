@@ -16,6 +16,7 @@ import { UserPermissionEntity } from './Infrastructure/schemas/UserPermissionSch
 import { UserRoleEntity } from './Infrastructure/schemas/UserRoleSchema';
 import { UserEntity } from './Infrastructure/schemas/UserSchema';
 import { UserTenantEntity } from './Infrastructure/schemas/UserTenantSchema';
+import { CreateSuperUserCliCommand } from './Presentation/Commands/CreateSuperUserCliCommand';
 import { SyncRolesCliCommand } from './Presentation/Commands/SyncRolesCliCommand';
 import { AuthControllers } from './Presentation/Controllers';
 
@@ -37,6 +38,7 @@ import { AuthControllers } from './Presentation/Controllers';
     JwtStrategy,
     HashService,
     SyncRolesCliCommand,
+    CreateSuperUserCliCommand,
     {
       provide: 'USER_REPOSITORY',
       useFactory: (dataSource: DataSource) => dataSource.getRepository(UserEntity),

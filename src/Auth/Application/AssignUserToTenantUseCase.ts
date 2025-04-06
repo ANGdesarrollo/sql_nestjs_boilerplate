@@ -43,8 +43,8 @@ export class AssignUserToTenantUseCase
     }
 
     const userTenant = await this.userTenantRepository.create({
-      user,
-      tenant,
+      userId: user.id,
+      tenantId: tenant.id,
       isDefault: setAsDefault
     });
 
