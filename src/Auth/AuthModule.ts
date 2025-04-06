@@ -1,8 +1,9 @@
-// src/Auth/AuthModule.ts
 import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { DataSource } from 'typeorm';
+
+import { EnvService } from '../Config/Env/EnvService';
 
 import { AuthUseCases } from './Application';
 import { HashService } from './Domain/Services/HashService';
@@ -12,7 +13,16 @@ import { UserEntity } from './Infrastructure/schemas/UserSchema';
 import { AuthControllers } from './Presentation/Controllers';
 
 @Module({
-  imports: [PassportModule.register({ defaultStrategy: 'jwt', session: false }), JwtModule.register({ secret: 'secretKey', signOptions: { expiresIn: '1h' } })],
+  imports: [
+    PassportModule.register({ defaultStrategy: 'jwt', session: false }),
+    JwtModule.registerAsync({
+      inject: [EnvService],
+      useFactory: (envService: EnvService) => ({
+        secret: envService.jwt.secret,
+        signOptions: { expiresIn: envService.jwt.expiresIn }
+      })
+    })
+  ],
   controllers: [...AuthControllers],
   providers: [
     ...AuthUseCases,

@@ -1,4 +1,3 @@
-
 import fastifyCookie from '@fastify/cookie';
 import { NestFactory } from '@nestjs/core';
 import {
@@ -7,6 +6,7 @@ import {
 } from '@nestjs/platform-fastify';
 
 import { AppModule } from './App/AppModule';
+import { EnvService } from './Config/Env/EnvService';
 
 void (async() =>
 {
@@ -15,12 +15,16 @@ void (async() =>
     new FastifyAdapter()
   );
 
+  const envService = app.get(EnvService);
+
   app.setGlobalPrefix('api');
 
   await app.register(fastifyCookie, {
-    secret: process.env.COOKIE_SECRET || 'super-secret-cookie-key', // Usa variables de entorno en producción
+    secret: envService.cookie.secret,
     hook: 'onRequest'
   });
 
-  await app.listen(process.env.PORT ?? 8000);
+  await app.listen(envService.port, '0.0.0.0');
+
+  console.log(`Application is running on: ${await app.getUrl()}`);
 })();
