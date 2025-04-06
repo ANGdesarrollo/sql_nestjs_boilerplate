@@ -6,7 +6,7 @@ import { EnvService } from '../../../Config/Env/EnvService';
 import { LoginUserUseCase } from '../../Application/LoginUserUseCase';
 import { CreateUserUseCase } from '../../Application/CreateUserUseCase';
 import { LoginUserPayload } from '../../Domain/Payloads/LoginUserPayload';
-import { RegisterUserPayload } from '../../Domain/Payloads/RegisterUserPayload';
+import { CreateUserPayload } from '../../Domain/Payloads/CreateUserPayload';
 import { JwtGuard } from '../Guards/JwtGuard';
 import { UserTransformer } from '../Transformers/UserTransformer';
 
@@ -22,7 +22,7 @@ export class AuthPostController
   @UseGuards(JwtGuard)
   @Post('register')
   @HttpCode(201)
-  async register(@Body() body: RegisterUserPayload)
+  async register(@Body() body: CreateUserPayload)
   {
     return new UserTransformer(await this.registerUserUseCase.execute(body));
   }

@@ -1,8 +1,5 @@
-import { TenantDomain } from '../Entities/TenantDomain';
-import { UserDomain } from '../Entities/UserDomain';
-
 export interface UserTenantPayload {
-  user: UserDomain;
-  tenant: TenantDomain;
+  userId: string;
+  tenantId: string;
   isDefault?: boolean;
 }

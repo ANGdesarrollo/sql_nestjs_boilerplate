@@ -4,13 +4,14 @@ import { Repository } from 'typeorm';
 import { BaseTypeOrmRepositoryImpl } from '../../../Shared/Infrastructure/BaseTypeOrmRepositoryImpl';
 import { UserTenantDomain } from '../../Domain/Entities/UserTenantDomain';
 import { UserTenantPayload } from '../../Domain/Payloads/UserTenantPayload';
+import { UserTenantEntity } from '../schemas/UserTenantSchema';
 
 @Injectable()
 export class UserTenantRepository extends BaseTypeOrmRepositoryImpl<UserTenantPayload, UserTenantDomain>
 {
   constructor(
     @Inject('USER_TENANT_REPOSITORY')
-      userTenantRepository: Repository<UserTenantDomain>
+    userTenantRepository: Repository<UserTenantEntity>
   )
   {
     super(userTenantRepository, 'UserTenantEntity');
@@ -24,7 +25,8 @@ export class UserTenantRepository extends BaseTypeOrmRepositoryImpl<UserTenantPa
         where: {
           user: { id: userId },
           tenant: { id: tenantId }
-        }
+        },
+        relations: ['tenant', 'user']
       });
     }
     catch (error)
@@ -70,13 +72,11 @@ export class UserTenantRepository extends BaseTypeOrmRepositoryImpl<UserTenantPa
   {
     try
     {
-      // First, reset all default flags for this user
       await this.repository.update(
         { user: { id: userId } },
         { isDefault: false }
       );
 
-      // Then set the new default
       await this.repository.update(
         {
           user: { id: userId },
@@ -88,6 +88,24 @@ export class UserTenantRepository extends BaseTypeOrmRepositoryImpl<UserTenantPa
     catch (error)
     {
       this.handleTypeOrmError(error, 'setDefaultTenant');
+    }
+  }
+
+  async create(payload: UserTenantPayload): Promise<UserTenantDomain>
+  {
+    try
+    {
+      const entity = this.repository.create({
+        user: { id: payload.userId },
+        tenant: { id: payload.tenantId },
+        isDefault: payload.isDefault || false
+      });
+
+      return await this.repository.save(entity);
+    }
+    catch (error)
+    {
+      this.handleTypeOrmError(error, 'create');
     }
   }
 }
