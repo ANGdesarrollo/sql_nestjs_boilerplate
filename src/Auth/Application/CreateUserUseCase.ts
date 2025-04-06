@@ -4,13 +4,13 @@ import { Validator } from '../../Shared/Presentation/Validations/Validator';
 import { TenantDomain } from '../Domain/Entities/TenantDomain';
 import { UserDomain } from '../Domain/Entities/UserDomain';
 import { UserTenantDomain } from '../Domain/Entities/UserTenantDomain';
+import { CreateUserPayload } from '../Domain/Payloads/CreateUserPayload';
 import { UserPayload } from '../Domain/Payloads/UserPayload';
 import { HashService } from '../Domain/Services/HashService';
 import { TenantRepository } from '../Infrastructure/repositories/TenantRepository';
 import { UserRepository } from '../Infrastructure/repositories/UserRepository';
 import { UserTenantRepository } from '../Infrastructure/repositories/UserTenantRepository';
 import { CreateUserPayloadSchema } from '../Presentation/Validations/CreateUserSchema';
-import { CreateUserPayload } from '../Domain/Payloads/CreateUserPayload';
 
 interface CreateUserWithTenantsResult {
   user: UserDomain;
@@ -44,7 +44,7 @@ export class CreateUserUseCase extends Validator<CreateUserPayload>
     await this._verifyUserDoesNotExist(data.username);
 
     // Find and validate all requested tenants in a single operation
-    const tenants = await this._findAndValidateTenants(data.tenantIds, data.defaultTenantId);
+    await this._findAndValidateTenants(data.tenantIds, data.defaultTenantId);
 
     // Create the user with hashed password
     const newUser = await this._createUser(data);
@@ -55,11 +55,6 @@ export class CreateUserUseCase extends Validator<CreateUserPayload>
     return { user: newUser, userTenants };
   }
 
-  /**
-   * Verifies that a user with the given username doesn't already exist
-   * @param username The username to check
-   * @throws ConflictException if the user already exists
-   */
   private async _verifyUserDoesNotExist(username: string): Promise<void>
   {
     const existingUser = await this.userRepository.findOneBy('username', username);
@@ -98,7 +93,8 @@ export class CreateUserUseCase extends Validator<CreateUserPayload>
     return tenants;
   }
 
-  private async _createUser(data: UserPayload): Promise<UserDomain> {
+  private async _createUser(data: UserPayload): Promise<UserDomain>
+  {
     const hashedPassword = await this.hashService.hash(data.password);
     return this.userRepository.create({
       username: data.username,
@@ -119,19 +115,5 @@ export class CreateUserUseCase extends Validator<CreateUserPayload>
     }));
 
     return this.userTenantRepository.createMany(userTenantPayloads);
-  }
-
-  /**
-   * Gets a user with all their tenant associations
-   * @param userId User ID
-   * @returns User with tenants or null if not found
-   */
-  async getUserWithTenants(userId: string): Promise<CreateUserWithTenantsResult | null>
-  {
-    const user = await this.userRepository.findOneBy('id', userId);
-    if (!user) { return null; }
-
-    const userTenants = await this.userTenantRepository.findUserTenants(userId);
-    return { user, userTenants };
   }
 }
