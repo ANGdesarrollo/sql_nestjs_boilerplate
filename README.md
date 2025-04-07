@@ -1,98 +1,162 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# NestJS Auth - Sistema Multi-Tenant con Roles y Permisos (EN PROGRESO)
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+Este proyecto implementa un sistema de autenticación multi-tenant completo con gestión de roles y permisos utilizando NestJS, TypeORM y PostgreSQL. Proporciona un conjunto de APIs RESTful para la gestión de usuarios, tenants (inquilinos), roles y permisos.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## Características principales
 
-## Description
+- 🔐 **Sistema de autenticación**: Login con JWT y cookies seguras
+- 👥 **Multi-tenancy**: Soporte para múltiples organizaciones/espacios de trabajo
+- 👮 **Control de acceso basado en roles (RBAC)**: Sistema completo de roles y permisos
+- 📝 **API RESTful**: Endpoints completos para gestión de usuarios y tenants
+- 🧩 **Arquitectura modular**: Diseño usando Arquitectura Limpia (Clean Architecture)
+- 🐘 **Base de datos PostgreSQL**: Almacenamiento persistente con TypeORM
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## Requisitos previos
 
-## Project setup
+- [Node.js](https://nodejs.org/) (v16 o superior)
+- [pnpm](https://pnpm.io/) (recomendado para gestión de paquetes)
+- [Docker](https://www.docker.com/) y [Docker Compose](https://docs.docker.com/compose/) (para la base de datos)
+
+## Configuración inicial
+
+### 1. Instalar dependencias
 
 ```bash
-$ pnpm install
+pnpm install
 ```
 
-## Compile and run the project
+### 3. Configuración del entorno
+
+Crea un archivo `.env` en la raíz del proyecto con las siguientes variables:
+
+```env
+# Entorno
+NODE_ENV=development
+PORT=8000
+
+# Base de datos
+DATABASE_HOST=localhost
+DATABASE_PORT=5432
+DATABASE_USER=postgres
+DATABASE_PASSWORD=postgres
+DATABASE_NAME=nest_auth
+
+# JWT
+JWT_SECRET=tu_secreto_jwt_super_seguro
+JWT_EXPIRES_IN=1h
+
+# Cookie
+COOKIE_SECRET=tu_secreto_cookie_super_seguro
+COOKIE_EXPIRATION=3600000
+```
+
+### 4. Iniciar la base de datos
+
+El proyecto incluye un archivo `docker-compose.yml` que configura PostgreSQL y pgAdmin:
 
 ```bash
-# development
-$ pnpm run start
-
-# watch mode
-$ pnpm run start:dev
-
-# production mode
-$ pnpm run start:prod
+docker-compose up -d
 ```
 
-## Run tests
+Esto iniciará:
+- PostgreSQL en el puerto 5432
+- pgAdmin en http://localhost:5050 (usuario: admin@admin.com, contraseña: admin)
+
+### 5. Sincronizar roles y permisos
+
+Antes de usar la aplicación, es necesario sincronizar los roles y permisos predefinidos:
 
 ```bash
-# unit tests
-$ pnpm run test
-
-# e2e tests
-$ pnpm run test:e2e
-
-# test coverage
-$ pnpm run test:cov
+pnpm run sync:roles
 ```
 
-## Deployment
+### 6. Crear superusuario (opcional)
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+Para crear un superusuario con acceso completo al sistema:
 
 ```bash
-$ pnpm install -g mau
-$ mau deploy
+# Con credenciales aleatorias (se mostrarán en la consola)
+pnpm run command create:superuser
+
+# O con credenciales personalizadas
+pnpm run command create:superuser --username admin --password adminpass --tenant-name "Mi Empresa" --tenant-slug miempresa
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+## Desarrollo
 
-## Resources
+### Iniciar la aplicación en modo desarrollo
 
-Check out a few resources that may come in handy when working with NestJS:
+```bash
+# Modo desarrollo con recarga automática
+pnpm run start:dev
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+# O modo desarrollo normal
+pnpm run start
+```
 
-## Support
+### Compilación y ejecución para producción
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+```bash
+# Compilar la aplicación
+pnpm run build
 
-## Stay in touch
+# Ejecutar la versión compilada
+pnpm run start:prod
+```
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+## Estructura del proyecto
 
-## License
+```
+src/
+├── App/                    # Módulo principal
+├── Auth/                   # Módulo de autenticación
+│   ├── Application/        # Casos de uso
+│   ├── Domain/             # Entidades y reglas de dominio
+│   ├── Infrastructure/     # Repositorios y schemas
+│   └── Presentation/       # Controladores, guardias y validadores
+├── Config/                 # Configuración global
+│   ├── Env/                # Variables de entorno
+│   ├── Permissions.ts      # Definición de permisos
+│   └── Roles.ts            # Definición de roles
+├── Shared/                 # Código compartido
+│   ├── Domain/             # Interfaces base
+│   ├── Infrastructure/     # Implementaciones compartidas
+│   └── Presentation/       # Validadores y utilidades
+└── main.ts                 # Punto de entrada
+```
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+
+
+## Testing
+
+```bash
+# Tests unitarios
+pnpm run test
+
+# Tests e2e
+pnpm run test:e2e
+
+# Cobertura de tests
+pnpm run test:cov
+```
+
+## Arquitectura
+
+Este proyecto sigue los principios de Arquitectura Limpia (Clean Architecture) con capas bien definidas:
+
+1. **Domain**: Contiene las entidades de negocio y reglas core
+2. **Application**: Casos de uso que orquestan las entidades de dominio
+3. **Infrastructure**: Implementaciones técnicas (repositorios, ORM)
+4. **Presentation**: Controladores, DTOs, validadores y punto de entrada para las APIs
+
+## Contribuir
+
+1. Haz un fork del repositorio
+2. Crea una rama para tu feature: `git checkout -b feature/nueva-funcionalidad`
+3. Haz commit de tus cambios: `git commit -m 'Añade nueva funcionalidad'`
+4. Sube tus cambios: `git push origin feature/nueva-funcionalidad`
+5. Envía un pull request
+
+## Licencia
+
+Este proyecto está licenciado bajo [MIT License](LICENSE).
