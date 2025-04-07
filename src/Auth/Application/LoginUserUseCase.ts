@@ -32,28 +32,9 @@ export class LoginUserUseCase
       throw new UnauthorizedException('User does not have a default tenant');
     }
 
-    const userRoles = await this.userRoleRepository.getUserRoles(user.id);
-    const permissions = new Set<string>();
-
-    userRoles.forEach(userRole =>
-    {
-      userRole.role.permissions.forEach(permission =>
-      {
-        permissions.add(permission.name);
-      });
-    });
-
-    const userPermissions = await this.userPermissionRepository.getUserPermissions(user.id);
-    userPermissions.forEach(userPermission =>
-    {
-      permissions.add(userPermission.permission.name);
-    });
-
     const payload: JwtPayload = {
-      username: user.username,
       userId: user.id,
-      tenantId: defaultUserTenant.tenant.id,
-      permissions: Array.from(permissions)
+      tenantId: defaultUserTenant.tenant.id
     };
 
     return this.jwtService.sign(payload);

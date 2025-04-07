@@ -1,40 +1,51 @@
-import { Injectable, CanActivate, ExecutionContext, UnauthorizedException, ForbiddenException } from '@nestjs/common';
+import { CanActivate, ExecutionContext, ForbiddenException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { JwtService } from '@nestjs/jwt';
 
+import { JwtPayload } from '../../Domain/Payloads/JwtPayload';
+import { UserPermissionRepository } from '../../Infrastructure/repositories/UserPermissionRepository';
+import { UserRoleRepository } from '../../Infrastructure/repositories/UserRoleRepository';
 import { PERMISSIONS_KEY } from '../Decorators/RequirePermissions';
-
-interface JwtPayload {
-  userId: string;
-  username: string;
-  tenantId: string;
-  permissions: string[];
-  iat: number;
-  exp: number;
-}
 
 @Injectable()
 export class AuthGuard implements CanActivate
 {
   constructor(
     private readonly reflector: Reflector,
-    private readonly jwtService: JwtService
+    private readonly jwtService: JwtService,
+    private readonly userRoleRepository: UserRoleRepository,
+    private readonly userPermissionRepository: UserPermissionRepository
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean>
   {
     const request = context.switchToHttp().getRequest();
 
-    const requiredPermissions = this.reflector.getAllAndOverride<string[]>(
-      PERMISSIONS_KEY,
-      [context.getHandler(), context.getClass()]
-    );
+    const requiredPermissions = this.reflector.getAllAndOverride<string[]>(PERMISSIONS_KEY, [
+      context.getHandler(),
+      context.getClass()
+    ]);
 
     if (!requiredPermissions || requiredPermissions.length === 0)
     {
-      return true;
+      const token = this.extractTokenFromRequest(request);
+      if (!token)
+      {
+        throw new UnauthorizedException('No authentication token provided');
+      }
+
+      try
+      {
+        request.user = this.jwtService.verify<JwtPayload>(token);
+        return true;
+      }
+      catch (error)
+      {
+        throw new UnauthorizedException('Invalid authentication token');
+      }
     }
 
+    // Si hay permisos requeridos, verificamos el token y los permisos
     const token = this.extractTokenFromRequest(request);
     if (!token)
     {
@@ -47,15 +58,9 @@ export class AuthGuard implements CanActivate
 
       request.user = decodedToken;
 
-      if (!decodedToken.permissions || !Array.isArray(decodedToken.permissions))
-      {
-        throw new UnauthorizedException('Invalid token format: missing permissions');
-      }
+      const userPermissions = await this.getUserPermissions(decodedToken.userId);
 
-      const hasPermission = this.checkPermissions(
-        decodedToken.permissions,
-        requiredPermissions
-      );
+      const hasPermission = this.checkPermissions(userPermissions, requiredPermissions);
 
       if (!hasPermission)
       {
@@ -91,13 +96,30 @@ export class AuthGuard implements CanActivate
     return null;
   }
 
-  private checkPermissions(
-    userPermissions: string[],
-    requiredPermissions: string[]
-  ): boolean
+  private async getUserPermissions(userId: string): Promise<string[]>
   {
-    return requiredPermissions.every(permission =>
-      userPermissions.includes(permission)
-    );
+    const userRoles = await this.userRoleRepository.getUserRoles(userId);
+    const permissionsSet = new Set<string>();
+
+    userRoles.forEach((userRole) =>
+    {
+      userRole.role.permissions.forEach((permission) =>
+      {
+        permissionsSet.add(permission.name);
+      });
+    });
+
+    const directPermissions = await this.userPermissionRepository.getUserPermissions(userId);
+    directPermissions.forEach((up) =>
+    {
+      permissionsSet.add(up.permission.name);
+    });
+
+    return Array.from(permissionsSet);
+  }
+
+  private checkPermissions(userPermissions: string[], requiredPermissions: string[]): boolean
+  {
+    return requiredPermissions.every((permission) => userPermissions.includes(permission));
   }
 }

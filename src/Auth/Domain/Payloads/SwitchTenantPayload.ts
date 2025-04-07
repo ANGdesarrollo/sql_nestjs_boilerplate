@@ -1,4 +1,4 @@
-export interface JwtPayload {
+export interface SwitchTenantPayload {
   userId: string;
   tenantId: string;
 }
