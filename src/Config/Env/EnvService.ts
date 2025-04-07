@@ -47,6 +47,17 @@ export class EnvService
 
   get database()
   {
+    if (this.isTest)
+    {
+      return {
+        host: this.get('TEST_DATABASE_HOST') as string,
+        port: this.get('TEST_DATABASE_PORT') as number,
+        username: this.get('TEST_DATABASE_USER') as string,
+        password: this.get('TEST_DATABASE_PASSWORD') as string,
+        name: this.get('TEST_DATABASE_NAME') as string
+      };
+    }
+
     return {
       host: this.get('DATABASE_HOST') as string,
       port: this.get('DATABASE_PORT') as number,
