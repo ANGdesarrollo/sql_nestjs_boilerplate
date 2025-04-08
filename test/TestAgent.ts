@@ -1,95 +1,32 @@
-import { JwtService } from '@nestjs/jwt';
+import fastifyCookie from '@fastify/cookie';
+import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify';
 import { Test, TestingModule } from '@nestjs/testing';
-import { HashService } from 'src/Auth/Domain/Services/HashService';
-import { DataSource } from 'typeorm';
 
-import { PermissionRepository } from '../src/Auth/Infrastructure/repositories/PermissionRepository';
-import { RoleRepository } from '../src/Auth/Infrastructure/repositories/RoleRepository';
-import { TenantRepository } from '../src/Auth/Infrastructure/repositories/TenantRepository';
-import { UserPermissionRepository } from '../src/Auth/Infrastructure/repositories/UserPermissionRepository';
-import { UserRepository } from '../src/Auth/Infrastructure/repositories/UserRepository';
-import { UserRoleRepository } from '../src/Auth/Infrastructure/repositories/UserRoleRepository';
-import { UserTenantRepository } from '../src/Auth/Infrastructure/repositories/UserTenantRepository';
-import { PermissionEntity } from '../src/Auth/Infrastructure/schemas/PermissionSchema';
-import { RoleEntity } from '../src/Auth/Infrastructure/schemas/RoleSchema';
-import { TenantEntity } from '../src/Auth/Infrastructure/schemas/TenantSchema';
-import { UserPermissionEntity } from '../src/Auth/Infrastructure/schemas/UserPermissionSchema';
-import { UserRoleEntity } from '../src/Auth/Infrastructure/schemas/UserRoleSchema';
-import { UserEntity } from '../src/Auth/Infrastructure/schemas/UserSchema';
-import { UserTenantEntity } from '../src/Auth/Infrastructure/schemas/UserTenantSchema';
+import { AppModule } from '../src/App/AppModule';
+import { EnvService } from '../src/Config/Env/EnvService';
 
-import { MockEnv } from './Mocks/MockEnvService';
-import { testConfig } from './TestConfig';
 
-interface TestModuleOptions {
-  additionalProviders?: any[];
-}
-
-export async function createTestingModule(
-  dataSource: DataSource,
-  options: TestModuleOptions = {}
-): Promise<TestingModule>
+export const getTestAgent = async() =>
 {
-  const baseProviders = [
-    HashService,
-    {
-      provide: JwtService,
-      useFactory: () => new JwtService({
-        secret: testConfig.jwt.secret,
-        signOptions: { expiresIn: testConfig.jwt.expiresIn }
-      })
-    },
-    {
-      provide: 'DATA_SOURCE',
-      useValue: dataSource
-    },
-    {
-      provide: 'USER_REPOSITORY',
-      useFactory: () => dataSource.getRepository(UserEntity)
-    },
-    {
-      provide: 'TENANT_REPOSITORY',
-      useFactory: () => dataSource.getRepository(TenantEntity)
-    },
-    {
-      provide: 'USER_TENANT_REPOSITORY',
-      useFactory: () => dataSource.getRepository(UserTenantEntity)
-    },
-    {
-      provide: 'USER_ROLE_REPOSITORY',
-      useFactory: () => dataSource.getRepository(UserRoleEntity)
-    },
-    {
-      provide: 'USER_PERMISSION_REPOSITORY',
-      useFactory: () => dataSource.getRepository(UserPermissionEntity)
-    },
-    {
-      provide: 'ROLE_REPOSITORY',
-      useFactory: () => dataSource.getRepository(RoleEntity)
-    },
-    {
-      provide: 'PERMISSION_REPOSITORY',
-      useFactory: () => dataSource.getRepository(PermissionEntity)
-    },
-    UserRepository,
-    TenantRepository,
-    UserTenantRepository,
-    UserRoleRepository,
-    UserPermissionRepository,
-    RoleRepository,
-    PermissionRepository,
-    {
-      provide: 'EnvService',
-      useClass: MockEnv
-    }
-  ];
-
-  const allProviders = [
-    ...baseProviders,
-    ...(options.additionalProviders || [])
-  ];
-
-  return Test.createTestingModule({
-    providers: allProviders
+  const testingModule: TestingModule = await Test.createTestingModule({
+    imports: [
+      AppModule
+    ]
   }).compile();
-}
+
+  const app = testingModule.createNestApplication<NestFastifyApplication>(new FastifyAdapter());
+
+  app.setGlobalPrefix('api');
+
+  const envService = app.get(EnvService);
+
+  await app.register(fastifyCookie, {
+    secret: envService.cookie.secret,
+    hook: 'onRequest'
+  });
+
+  await app.init();
+  await app.getHttpAdapter().getInstance().ready();
+
+  return app;
+};
