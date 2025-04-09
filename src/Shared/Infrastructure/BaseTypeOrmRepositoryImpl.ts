@@ -1,5 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { DeepPartial, EntityManager, ObjectLiteral, Repository } from 'typeorm';
+import { DeepPartial, EntityManager, FindOneOptions, ObjectLiteral, Repository } from 'typeorm';
 
 import { BaseRepository } from '../Domain/Repositories/BaseRepository';
 
@@ -43,15 +43,24 @@ export abstract class BaseTypeOrmRepositoryImpl<D, T extends ObjectLiteral> impl
   }
 
 
-  async findOneBy<K extends keyof T>(fieldName: K, fieldValue: T[K]): Promise<T | null>
+  async findOneBy<K extends keyof T>(
+    fieldName: K,
+    fieldValue: T[K],
+    relations?: string[]
+  ): Promise<T | null>
   {
     try
     {
-      // Crear el objeto where dinámicamente y convertirlo para TypeORM
       const where = {} as any;
       where[fieldName] = fieldValue;
 
-      return await this.repository.findOne({ where });
+      const options: FindOneOptions<T> = { where };
+      if (relations && relations.length > 0)
+      {
+        options.relations = relations;
+      }
+
+      return await this.repository.findOne(options);
     }
     catch (error)
     {

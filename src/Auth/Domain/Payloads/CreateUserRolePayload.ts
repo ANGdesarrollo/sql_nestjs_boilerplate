@@ -1,4 +1,5 @@
-export interface CreateUserRolePayload {
-  userId: string;
-  roleId: string;
+export interface CreateUserRolePayload
+{
+  user: { id: string };
+  role: { id: string };
 }

@@ -32,7 +32,6 @@ export class CreateSuperUserUseCase
 
   async execute(config?: Partial<SuperUserConfig>): Promise<void>
   {
-    // Default configuration
     const superUserConfig: SuperUserConfig = {
       username: config?.username || 'superadmin',
       password: config?.password || this._generateRandomPassword(),
@@ -40,23 +39,20 @@ export class CreateSuperUserUseCase
       tenantSlug: config?.tenantSlug || 'system'
     };
 
-    await this.dataSource.transaction(async(manager) =>
+    return this.dataSource.transaction(async(manager) =>
     {
-      // Get transactional repositories
       const userRepo = this.userRepository.withTransaction(manager);
       const tenantRepo = this.tenantRepository.withTransaction(manager);
       const userTenantRepo = this.userTenantRepository.withTransaction(manager);
       const roleRepo = this.roleRepository.withTransaction(manager);
       const userRoleRepo = this.userRoleRepository.withTransaction(manager);
 
-      // Check if super admin role exists
       const superAdminRole = await roleRepo.findOneBy('name', Roles.SUPER_ADMIN);
       if (!superAdminRole)
       {
         throw new BadRequestException('Super admin role not found. Make sure to run the sync:roles command first');
       }
 
-      // Create or get system tenant
       const existingTenant = await tenantRepo.findBySlug(superUserConfig.tenantSlug);
       const tenant = existingTenant || await tenantRepo.create({
         name: superUserConfig.tenantName,
@@ -64,7 +60,6 @@ export class CreateSuperUserUseCase
         description: 'System tenant for super administrators'
       });
 
-      // Check if user already exists
       const existingUser = await userRepo.findOneBy('username', superUserConfig.username);
       if (existingUser)
       {
@@ -72,27 +67,23 @@ export class CreateSuperUserUseCase
         return;
       }
 
-      // Create user
       const hashedPassword = await this.hashService.hash(superUserConfig.password);
       const user = await userRepo.create({
         username: superUserConfig.username,
         password: hashedPassword
       });
 
-      // Create user-tenant relation
       await userTenantRepo.create({
         userId: user.id,
         tenantId: tenant.id,
         isDefault: true
       });
 
-      // Assign super admin role
       await userRoleRepo.create({
-        userId: user.id,
-        roleId: superAdminRole.id
+        user: { id: user.id },
+        role: { id: superAdminRole.id }
       });
 
-      console.log('Super user created successfully');
       if (!config?.password)
       {
         console.log('======================================================');
@@ -103,8 +94,6 @@ export class CreateSuperUserUseCase
         console.log('Please change this password after your first login');
       }
     });
-
-    const roels = await this.roleRepository.list();
   }
 
   private _generateRandomPassword(length = 12): string

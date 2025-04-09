@@ -31,8 +31,11 @@ describe('LoginUserUseCase - Integration Test', () =>
     await syncRolesUseCase.execute();
     await createSuperUserUseCase.execute(testUser);
 
-    const user = await userRepository.findOneBy('username', testUser.username);
-    console.log(user, ' soy user ');
+    const user = await userRepository.findOneBy(
+      'username',
+      testUser.username,
+      ['tenants', 'roles', 'permissions']
+    );
   });
 
   describe('execute', () =>

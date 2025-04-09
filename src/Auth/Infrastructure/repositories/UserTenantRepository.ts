@@ -4,14 +4,13 @@ import { Repository } from 'typeorm';
 import { BaseTypeOrmRepositoryImpl } from '../../../Shared/Infrastructure/BaseTypeOrmRepositoryImpl';
 import { UserTenantDomain } from '../../Domain/Entities/UserTenantDomain';
 import { UserTenantPayload } from '../../Domain/Payloads/UserTenantPayload';
-import { UserTenantEntity } from '../schemas/UserTenantSchema';
 
 @Injectable()
 export class UserTenantRepository extends BaseTypeOrmRepositoryImpl<UserTenantPayload, UserTenantDomain>
 {
   constructor(
     @Inject('USER_TENANT_REPOSITORY')
-      userTenantRepository: Repository<UserTenantEntity>
+      userTenantRepository: Repository<UserTenantDomain>
   )
   {
     super(userTenantRepository, 'UserTenantEntity');

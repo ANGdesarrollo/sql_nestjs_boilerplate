@@ -6,13 +6,15 @@ import { GetUserUseCase } from '../../Application/GetUserUseCase';
 import { RequestWithUserPayload } from '../../Domain/Payloads/RequestWithUserPayload';
 import { RequirePermissions } from '../Decorators/RequirePermissions';
 import { AuthGuard } from '../Guards/AuthGuard';
+import { UserRoleRepository } from '../../Infrastructure/repositories/UserRoleRepository';
 
 @Controller('auth')
 export class AuthGetController
 {
   constructor(
     private readonly getUserUseCase: GetUserUseCase,
-    private readonly getMeUseCase: GetMeUseCase
+    private readonly getMeUseCase: GetMeUseCase,
+    private readonly repository: UserRoleRepository
   ) {}
   @Get('users/:userId')
   @RequirePermissions(Permissions.USER.READ)
@@ -26,5 +28,12 @@ export class AuthGetController
   async getMe(@Req() request: RequestWithUserPayload)
   {
     return this.getMeUseCase.execute(request.user.userId);
+  }
+
+  @Get('test')
+  @UseGuards(AuthGuard)
+  async test(@Req() request: RequestWithUserPayload)
+  {
+    return this.repository.getUserRoles(request.user.userId);
   }
 }

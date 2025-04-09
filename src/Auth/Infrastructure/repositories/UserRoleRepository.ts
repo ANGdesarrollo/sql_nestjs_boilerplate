@@ -22,8 +22,7 @@ export class UserRoleRepository extends BaseTypeOrmRepositoryImpl<CreateUserRole
     try
     {
       return await this.repository.find({
-        where: { user: { id: userId } },
-        relations: ['role', 'role.permissions']
+        where: { user: { id: userId } }
       });
     }
     catch (error)

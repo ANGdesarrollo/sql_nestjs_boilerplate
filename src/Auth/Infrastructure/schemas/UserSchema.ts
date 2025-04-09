@@ -17,13 +17,13 @@ export class UserEntity
     password: string;
 
   @OneToMany(() => UserRoleEntity, userRole => userRole.user)
-    userRoles: UserRoleEntity[];
+    roles: UserRoleEntity[];
 
   @OneToMany(() => UserPermissionEntity, userPermission => userPermission.user)
-    userPermissions: UserPermissionEntity[];
+    permissions: UserPermissionEntity[];
 
   @OneToMany(() => UserTenantEntity, userTenant => userTenant.user)
-    userTenants: UserTenantEntity[];
+    tenants: UserTenantEntity[];
 
   @CreateDateColumn({ name: 'created_at' })
     createdAt: Date;
