@@ -32,7 +32,7 @@ export const DatabaseConnections = [
           UserTenantEntity
         ],
         synchronize: !configService.isProduction,
-        logging: !configService.isProduction && !configService.isTest
+        logging: !configService.isProduction && !configService.isTest && !configService.isDevelopment
       });
 
       return dataSource.initialize();

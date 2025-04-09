@@ -2,6 +2,7 @@ import { CanActivate, ExecutionContext, ForbiddenException, Injectable, Unauthor
 import { Reflector } from '@nestjs/core';
 import { JwtService } from '@nestjs/jwt';
 
+import { Logger } from '../../../Shared/Presentation/Utils/Logger';
 import { JwtPayload } from '../../Domain/Payloads/JwtPayload';
 import { UserPermissionRepository } from '../../Infrastructure/repositories/UserPermissionRepository';
 import { UserRoleRepository } from '../../Infrastructure/repositories/UserRoleRepository';
@@ -39,13 +40,12 @@ export class AuthGuard implements CanActivate
         request.user = this.jwtService.verify<JwtPayload>(token);
         return true;
       }
-      catch (error)
+      catch
       {
         throw new UnauthorizedException('Invalid authentication token');
       }
     }
 
-    // Si hay permisos requeridos, verificamos el token y los permisos
     const token = this.extractTokenFromRequest(request);
     if (!token)
     {
@@ -59,6 +59,7 @@ export class AuthGuard implements CanActivate
       request.user = decodedToken;
 
       const userPermissions = await this.getUserPermissions(decodedToken.userId);
+      Logger.log(userPermissions, 'soy token');
 
       const hasPermission = this.checkPermissions(userPermissions, requiredPermissions);
 
@@ -76,7 +77,7 @@ export class AuthGuard implements CanActivate
         throw error;
       }
 
-      throw new UnauthorizedException('Invalid authentication token');
+      throw new UnauthorizedException(error.message);
     }
   }
 
@@ -99,6 +100,7 @@ export class AuthGuard implements CanActivate
   private async getUserPermissions(userId: string): Promise<string[]>
   {
     const userRoles = await this.userRoleRepository.getUserRoles(userId);
+    Logger.error(userRoles, 'soy user roles');
     const permissionsSet = new Set<string>();
 
     userRoles.forEach((userRole) =>

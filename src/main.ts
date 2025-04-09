@@ -12,8 +12,12 @@ void (async() =>
 {
   const app = await NestFactory.create<NestFastifyApplication>(
     AppModule,
-    new FastifyAdapter()
+    new FastifyAdapter(),
+    {
+      logger: ['error', 'warn', 'log', 'debug', 'verbose']
+    }
   );
+
 
   const envService = app.get(EnvService);
 

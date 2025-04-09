@@ -46,7 +46,6 @@ export class AuthPostController
   async createUser(@Body() body: CreateUserPayload)
   {
     await this.createUserUseCase.execute(body);
-    return { message: 'User created successfully' };
   }
 
   @Post('tenant')

@@ -54,11 +54,11 @@ export class AssignUserToTenantUseCase
     }
     else
     {
-      const userTenants = await this.userTenantRepository.findUserTenants(userId);
-      if (userTenants.length === 1)
-      {
-        await this.userTenantRepository.setDefaultTenant(userId, tenantId);
-      }
+      // const userTenants = await this.userTenantRepository.findUserTenants(userId);
+      // if (userTenants.length === 1)
+      // {
+      //   await this.userTenantRepository.setDefaultTenant(userId, tenantId);
+      // }
     }
 
     return userTenant;

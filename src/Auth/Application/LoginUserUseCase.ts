@@ -6,6 +6,7 @@ import { LoginUserPayload } from '../Domain/Payloads/LoginUserPayload';
 import { HashService } from '../Domain/Services/HashService';
 import { UserRepository } from '../Infrastructure/repositories/UserRepository';
 import { UserTenantRepository } from '../Infrastructure/repositories/UserTenantRepository';
+import { Logger } from '../../Shared/Presentation/Utils/Logger';
 
 @Injectable()
 export class LoginUserUseCase
@@ -49,12 +50,10 @@ export class LoginUserUseCase
 
   private async comparePassword(passwordStored: string, password: string)
   {
-    console.log("llegue", password, passwordStored);
     const isPasswordCorrect = await this.hashService.compare(password, passwordStored);
 
     if (!isPasswordCorrect)
     {
-      console.log("entre al expception");
       throw new UnauthorizedException('User or password incorrect');
     }
 

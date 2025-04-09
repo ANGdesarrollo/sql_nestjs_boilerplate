@@ -4,7 +4,6 @@ import { Repository } from 'typeorm';
 import { BaseTypeOrmRepositoryImpl } from '../../../Shared/Infrastructure/BaseTypeOrmRepositoryImpl';
 import { UserRoleDomain } from '../../Domain/Entities/UserRoleDomain';
 import { CreateUserRolePayload } from '../../Domain/Payloads/CreateUserRolePayload';
-import { UserRoleEntity } from '../schemas/UserRoleSchema';
 
 @Injectable()
 export class UserRoleRepository extends BaseTypeOrmRepositoryImpl<CreateUserRolePayload, UserRoleDomain>
@@ -22,7 +21,8 @@ export class UserRoleRepository extends BaseTypeOrmRepositoryImpl<CreateUserRole
     try
     {
       return await this.repository.find({
-        where: { user: { id: userId } }
+        where: { user: { id: userId } },
+        relations: ['role', 'role.permissions']
       });
     }
     catch (error)
