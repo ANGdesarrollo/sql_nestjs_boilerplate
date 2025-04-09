@@ -12,11 +12,11 @@ export class UserRoleEntity
   @PrimaryColumn({ name: 'role_id' })
     roleId: string;
 
-  @ManyToOne(() => UserEntity, { onDelete: 'CASCADE', eager: true })
+  @ManyToOne(() => UserEntity, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'user_id' })
     user: UserEntity;
 
-  @ManyToOne(() => RoleEntity, { onDelete: 'CASCADE', eager: true })
+  @ManyToOne(() => RoleEntity, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'role_id' })
     role: RoleEntity;
 

@@ -11,7 +11,7 @@ export class UserRoleRepository extends BaseTypeOrmRepositoryImpl<CreateUserRole
 {
   constructor(
     @Inject('USER_ROLE_REPOSITORY')
-      userRoleRepository: Repository<UserRoleEntity>
+      userRoleRepository: Repository<UserRoleDomain>
   )
   {
     super(userRoleRepository, 'UserRoleEntity');

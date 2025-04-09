@@ -11,7 +11,7 @@ export class UserPermissionRepository extends BaseTypeOrmRepositoryImpl<UserPerm
 {
   constructor(
     @Inject('USER_PERMISSION_REPOSITORY')
-      userPermissionRepository: Repository<UserPermissionEntity>
+      userPermissionRepository: Repository<UserPermissionDomain>
   )
   {
     super(userPermissionRepository, 'UserPermissionEntity');

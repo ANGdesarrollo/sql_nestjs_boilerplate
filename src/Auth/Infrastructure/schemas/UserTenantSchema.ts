@@ -13,7 +13,7 @@ export class UserTenantEntity
   @JoinColumn({ name: 'user_id' })
     user: UserEntity;
 
-  @ManyToOne(() => TenantEntity, { onDelete: 'CASCADE', eager: true })
+  @ManyToOne(() => TenantEntity, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'tenant_id' })
     tenant: TenantEntity;
 

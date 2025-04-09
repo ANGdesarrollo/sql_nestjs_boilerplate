@@ -4,9 +4,7 @@ import { JwtService } from '@nestjs/jwt';
 import { JwtPayload } from '../Domain/Payloads/JwtPayload';
 import { LoginUserPayload } from '../Domain/Payloads/LoginUserPayload';
 import { HashService } from '../Domain/Services/HashService';
-import { UserPermissionRepository } from '../Infrastructure/repositories/UserPermissionRepository';
 import { UserRepository } from '../Infrastructure/repositories/UserRepository';
-import { UserRoleRepository } from '../Infrastructure/repositories/UserRoleRepository';
 import { UserTenantRepository } from '../Infrastructure/repositories/UserTenantRepository';
 
 @Injectable()
@@ -14,9 +12,7 @@ export class LoginUserUseCase
 {
   constructor(
     private readonly userRepository: UserRepository,
-    private readonly userRoleRepository: UserRoleRepository,
     private readonly userTenantRepository: UserTenantRepository,
-    private readonly userPermissionRepository: UserPermissionRepository,
     private readonly jwtService: JwtService,
     private readonly hashService: HashService
   ) {}
@@ -53,10 +49,12 @@ export class LoginUserUseCase
 
   private async comparePassword(passwordStored: string, password: string)
   {
+    console.log("llegue", password, passwordStored);
     const isPasswordCorrect = await this.hashService.compare(password, passwordStored);
 
     if (!isPasswordCorrect)
     {
+      console.log("entre al expception");
       throw new UnauthorizedException('User or password incorrect');
     }
 

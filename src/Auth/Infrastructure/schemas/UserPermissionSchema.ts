@@ -13,7 +13,7 @@ export class UserPermissionEntity
   @JoinColumn({ name: 'user_id' })
     user: UserEntity;
 
-  @ManyToOne(() => PermissionEntity, { onDelete: 'CASCADE', eager: true })
+  @ManyToOne(() => PermissionEntity, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'permission_id' })
     permission: PermissionEntity;
 

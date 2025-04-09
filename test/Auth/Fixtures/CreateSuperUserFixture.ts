@@ -1,6 +1,14 @@
 import { faker } from '@faker-js/faker';
 
-export const CreateSuperUserFixture = (): any =>
+export interface SuperUserFixture
+{
+  username: string;
+  password: string;
+  tenantName: string;
+  tenantSlug: string;
+}
+
+export const CreateSuperUserFixture = (): SuperUserFixture =>
 {
   return {
     username: faker.internet.email(),
