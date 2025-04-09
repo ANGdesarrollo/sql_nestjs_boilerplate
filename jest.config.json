@@ -5,5 +5,19 @@
   "testRegex": ".test.ts$",
   "transform": {
     "^.+\\.(t|j)s$": "ts-jest"
-  }
+  },
+  "setupFilesAfterEnv": ["./test/testSetup.ts"],
+  "collectCoverage": true,
+  "collectCoverageFrom": [
+    "src/**/*.ts",
+    "!src/main.ts",
+    "!src/commander.ts",
+    "!src/**/*.module.ts",
+    "!src/**/*.dto.ts",
+    "!src/**/*.entity.ts"
+  ],
+  "coverageDirectory": "./coverage",
+  "coverageReporters": ["text", "lcov"],
+  "testPathIgnorePatterns": ["/node_modules/", "/dist/"],
+  "verbose": true
 }

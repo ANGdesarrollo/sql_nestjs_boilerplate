@@ -88,8 +88,8 @@ export class CreateSuperUserUseCase
 
       // Assign super admin role
       await userRoleRepo.create({
-        user,
-        role: superAdminRole
+        userId: user.id,
+        roleId: superAdminRole.id
       });
 
       console.log('Super user created successfully');
@@ -103,6 +103,8 @@ export class CreateSuperUserUseCase
         console.log('Please change this password after your first login');
       }
     });
+
+    const roels = await this.roleRepository.list();
   }
 
   private _generateRandomPassword(length = 12): string

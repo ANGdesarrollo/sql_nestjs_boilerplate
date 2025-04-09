@@ -121,8 +121,8 @@ export class CreateUserUseCase extends Validator<CreateUserPayload>
     }
 
     await userRoleRepo.create({
-      user,
-      role: defaultRole
+      userId: user.id,
+      roleId: defaultRole.id
     });
   }
 

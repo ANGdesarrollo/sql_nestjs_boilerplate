@@ -1,52 +1,38 @@
 import { UnauthorizedException } from '@nestjs/common';
-import { NestFastifyApplication } from '@nestjs/platform-fastify';
-import { DataSource } from 'typeorm';
 
 import { CreateSuperUserUseCase } from '../../src/Auth/Application/CreateSuperUserUseCase';
 import { LoginUserUseCase } from '../../src/Auth/Application/LoginUserUseCase';
 import { SyncRolesUseCase } from '../../src/Auth/Application/SyncRolesUseCase';
 import { HashService } from '../../src/Auth/Domain/Services/HashService';
-import { TenantRepository } from '../../src/Auth/Infrastructure/repositories/TenantRepository';
 import { UserRepository } from '../../src/Auth/Infrastructure/repositories/UserRepository';
-import { UserTenantRepository } from '../../src/Auth/Infrastructure/repositories/UserTenantRepository';
-import { clearDatabase } from '../ClearDatabase';
-import { getTestAgent } from '../TestAgent';
 
 import { CreateSuperUserFixture } from './Fixtures/CreateSuperUserFixture';
 
-
 describe('LoginUserUseCase - Integration Test', () =>
 {
-  let app: NestFastifyApplication;
   let loginUserUseCase: LoginUserUseCase;
   let userRepository: UserRepository;
   let hashService: HashService;
   let syncRolesUseCase: SyncRolesUseCase;
   let createSuperUserUseCase: CreateSuperUserUseCase;
-  let dataSource: DataSource;
 
   const testUser = CreateSuperUserFixture();
 
   beforeAll(async() =>
   {
-    app = await getTestAgent();
+    const { app } = await global.getTestEnv();
 
     loginUserUseCase = app.get(LoginUserUseCase);
     userRepository = app.get(UserRepository);
     hashService = app.get(HashService);
     syncRolesUseCase = app.get(SyncRolesUseCase);
     createSuperUserUseCase = app.get(CreateSuperUserUseCase);
-    dataSource = app.get<DataSource>('DATA_SOURCE');
 
     await syncRolesUseCase.execute();
-
     await createSuperUserUseCase.execute(testUser);
-  });
 
-  afterAll(async() =>
-  {
-    await clearDatabase(dataSource);
-    await app.close();
+    const user = await userRepository.findOneBy('username', testUser.username);
+    console.log(user, ' soy user ');
   });
 
   describe('execute', () =>
