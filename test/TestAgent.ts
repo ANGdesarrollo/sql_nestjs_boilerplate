@@ -1,6 +1,7 @@
 import fastifyCookie from '@fastify/cookie';
 import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify';
 import { Test, TestingModule } from '@nestjs/testing';
+import { DataSource } from 'typeorm';
 
 import { AppModule } from '../src/App/AppModule';
 import { EnvService } from '../src/Config/Env/EnvService';
@@ -28,5 +29,10 @@ export const getTestAgent = async() =>
   await app.init();
   await app.getHttpAdapter().getInstance().ready();
 
-  return app;
+  const database: DataSource = app.get<DataSource>('DATA_SOURCE');
+
+  return {
+    app,
+    database
+  };
 };
