@@ -9,6 +9,7 @@ import { TenantRepository } from '../Infrastructure/Repositories/TenantRepositor
 import { UserRepository } from '../Infrastructure/Repositories/UserRepository';
 import { UserRoleRepository } from '../Infrastructure/Repositories/UserRoleRepository';
 import { UserTenantRepository } from '../Infrastructure/Repositories/UserTenantRepository';
+import { Logger } from '../../Shared/Presentation/Utils/Logger';
 
 interface SuperUserConfig {
   username: string;
@@ -33,7 +34,7 @@ export class CreateSuperUserUseCase
   async execute(config?: Partial<SuperUserConfig>): Promise<void>
   {
     const superUserConfig: SuperUserConfig = {
-      username: config?.username || 'superadmin',
+      username: config?.username || 'superadmin@node.com',
       password: config?.password || this._generateRandomPassword(),
       tenantName: config?.tenantName || 'System',
       tenantSlug: config?.tenantSlug || 'system'
@@ -86,12 +87,12 @@ export class CreateSuperUserUseCase
 
       if (!config?.password)
       {
-        console.log('======================================================');
-        console.log('Super User Created with the following credentials:');
-        console.log(`Username: ${superUserConfig.username}`);
-        console.log(`Password: ${superUserConfig.password}`);
-        console.log('======================================================');
-        console.log('Please change this password after your first login');
+        Logger.log('======================================================');
+        Logger.log('Super User Created with the following credentials:');
+        Logger.log(`Username: ${superUserConfig.username}`);
+        Logger.log(`Password: ${superUserConfig.password}`);
+        Logger.log('======================================================');
+        Logger.log('Please change this password after your first login');
       }
     });
   }
