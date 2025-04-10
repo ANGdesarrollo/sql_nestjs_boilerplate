@@ -6,7 +6,7 @@ import { GetUserUseCase } from '../../Application/GetUserUseCase';
 import { RequestWithUserPayload } from '../../Domain/Payloads/RequestWithUserPayload';
 import { RequirePermissions } from '../Decorators/RequirePermissions';
 import { AuthGuard } from '../Guards/AuthGuard';
-import { UserRoleRepository } from '../../Infrastructure/repositories/UserRoleRepository';
+import { UserRoleRepository } from '../../Infrastructure/Repositories/UserRoleRepository';
 
 @Controller('auth')
 export class AuthGetController

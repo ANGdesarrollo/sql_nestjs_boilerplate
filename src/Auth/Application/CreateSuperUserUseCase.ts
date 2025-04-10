@@ -4,11 +4,11 @@ import { DataSource } from 'typeorm';
 import { EnvService } from '../../Config/Env/EnvService';
 import { Roles } from '../../Config/Roles';
 import { HashService } from '../Domain/Services/HashService';
-import { RoleRepository } from '../Infrastructure/repositories/RoleRepository';
-import { TenantRepository } from '../Infrastructure/repositories/TenantRepository';
-import { UserRepository } from '../Infrastructure/repositories/UserRepository';
-import { UserRoleRepository } from '../Infrastructure/repositories/UserRoleRepository';
-import { UserTenantRepository } from '../Infrastructure/repositories/UserTenantRepository';
+import { RoleRepository } from '../Infrastructure/Repositories/RoleRepository';
+import { TenantRepository } from '../Infrastructure/Repositories/TenantRepository';
+import { UserRepository } from '../Infrastructure/Repositories/UserRepository';
+import { UserRoleRepository } from '../Infrastructure/Repositories/UserRoleRepository';
+import { UserTenantRepository } from '../Infrastructure/Repositories/UserTenantRepository';
 
 interface SuperUserConfig {
   username: string;

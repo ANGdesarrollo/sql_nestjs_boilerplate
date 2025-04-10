@@ -54,7 +54,8 @@ export class EnvService
         port: this.get('TEST_DATABASE_PORT') as number,
         username: this.get('TEST_DATABASE_USER') as string,
         password: this.get('TEST_DATABASE_PASSWORD') as string,
-        name: this.get('TEST_DATABASE_NAME') as string
+        name: this.get('TEST_DATABASE_NAME') as string,
+        schema: this.get('DATABASE_SCHEMA') as string
       };
     }
 
@@ -63,7 +64,8 @@ export class EnvService
       port: this.get('DATABASE_PORT') as number,
       username: this.get('DATABASE_USER') as string,
       password: this.get('DATABASE_PASSWORD') as string,
-      name: this.get('DATABASE_NAME') as string
+      name: this.get('DATABASE_NAME') as string,
+      schema: this.get('DATABASE_SCHEMA') as string
     };
   }
 

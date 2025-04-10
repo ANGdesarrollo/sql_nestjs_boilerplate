@@ -1,15 +1,17 @@
 import { faker } from '@faker-js/faker';
 import { ConflictException, BadRequestException } from '@nestjs/common';
 import { NestFastifyApplication } from '@nestjs/platform-fastify';
+import { DataSource } from 'typeorm';
 
 import { CreateSuperUserUseCase } from '../../src/Auth/Application/CreateSuperUserUseCase';
 import { CreateUserUseCase } from '../../src/Auth/Application/CreateUserUseCase';
 import { SyncRolesUseCase } from '../../src/Auth/Application/SyncRolesUseCase';
-import { RoleRepository } from '../../src/Auth/Infrastructure/repositories/RoleRepository';
-import { TenantRepository } from '../../src/Auth/Infrastructure/repositories/TenantRepository';
-import { UserRepository } from '../../src/Auth/Infrastructure/repositories/UserRepository';
-import { UserRoleRepository } from '../../src/Auth/Infrastructure/repositories/UserRoleRepository';
-import { UserTenantRepository } from '../../src/Auth/Infrastructure/repositories/UserTenantRepository';
+import { HashService } from '../../src/Auth/Domain/Services/HashService';
+import { RoleRepository } from '../../src/Auth/Infrastructure/Repositories/RoleRepository';
+import { TenantRepository } from '../../src/Auth/Infrastructure/Repositories/TenantRepository';
+import { UserRepository } from '../../src/Auth/Infrastructure/Repositories/UserRepository';
+import { UserRoleRepository } from '../../src/Auth/Infrastructure/Repositories/UserRoleRepository';
+import { UserTenantRepository } from '../../src/Auth/Infrastructure/Repositories/UserTenantRepository';
 import { Roles } from '../../src/Config/Roles';
 
 import { CreateSuperUserFixture, SuperUserFixture } from './Fixtures/CreateSuperUserFixture';
@@ -28,11 +30,14 @@ describe('CreateUserUseCase - Integration Test', () =>
   let roleRepository: RoleRepository;
   let superUser: SuperUserFixture;
   let tenantId: string;
+  let dataSource: DataSource;
+  let hashService: HashService;
 
   beforeAll(async() =>
   {
     const testEnv = await global.getTestEnv();
     app = testEnv.app;
+    dataSource = testEnv.dataSource;
 
     createUserUseCase = app.get(CreateUserUseCase);
     syncRolesUseCase = app.get(SyncRolesUseCase);
@@ -42,6 +47,7 @@ describe('CreateUserUseCase - Integration Test', () =>
     userTenantRepository = app.get(UserTenantRepository);
     userRoleRepository = app.get(UserRoleRepository);
     roleRepository = app.get(RoleRepository);
+    hashService = app.get(HashService);
   });
 
   beforeEach(async() =>
@@ -145,6 +151,96 @@ describe('CreateUserUseCase - Integration Test', () =>
       const tenantIds = userTenants.map(ut => ut.tenant.id);
       expect(tenantIds).toContain(tenantId);
       expect(tenantIds).toContain(secondTenant.id);
+    });
+
+    // New test case: Default user role not found
+    it('should throw BadRequestException when default user role is not found', async() =>
+    {
+      // We need to mock at the transaction level since the code uses transactions
+      const mockUserRoleRepo = {
+        create: jest.fn(),
+        withTransaction: jest.fn().mockReturnValue({
+          create: jest.fn()
+        })
+      };
+
+      const mockRoleRepo = {
+        findOneBy: jest.fn().mockResolvedValue(null),
+        withTransaction: jest.fn().mockReturnValue({
+          findOneBy: jest.fn().mockResolvedValue(null)
+        })
+      };
+
+      // Mock other required repositories
+      const mockUserRepo = {
+        create: jest.fn(),
+        findOneBy: jest.fn().mockResolvedValue(null),
+        withTransaction: jest.fn().mockReturnValue({
+          create: jest.fn().mockResolvedValue({ id: 'mock-user-id' })
+        })
+      };
+
+      const mockUserTenantRepo = {
+        createMany: jest.fn(),
+        withTransaction: jest.fn().mockReturnValue({
+          createMany: jest.fn()
+        })
+      };
+
+      // Create a custom instance of CreateUserUseCase with mocked dependencies
+      const customCreateUserUseCase = new CreateUserUseCase(
+        mockUserRepo as any,
+        tenantRepository,
+        mockUserTenantRepo as any,
+        mockRoleRepo as any,
+        mockUserRoleRepo as any,
+        hashService,
+        dataSource
+      );
+
+      const payload = CreateUserFixture({
+        tenantIds: [tenantId],
+        defaultTenantId: tenantId
+      });
+
+      await expect(customCreateUserUseCase.execute(payload))
+        .rejects.toThrow('Default user role not found. Make sure to run the sync:roles command');
+    });
+
+    // Testing the username conflict case again with more specific assertion
+    it('should throw ConflictException with correct message when username already exists', async() =>
+    {
+      const payload = CreateUserFixture({
+        tenantIds: [tenantId],
+        defaultTenantId: tenantId
+      });
+
+      await createUserUseCase.execute(payload);
+
+      // Use try-catch to capture the exact error message
+      try
+      {
+        await createUserUseCase.execute(payload);
+        fail('Expected ConflictException to be thrown');
+      }
+      catch (error)
+      {
+        expect(error).toBeInstanceOf(ConflictException);
+        expect(error.message).toBe(`User with username '${payload.username}' already exists`);
+      }
+    });
+
+    it('should throw BadRequestException when some tenantIds do not exist in the database', async() =>
+    {
+      const fakeTenantId = faker.string.uuid();
+
+      const payload = CreateUserFixture({
+        tenantIds: [tenantId, fakeTenantId],
+        defaultTenantId: tenantId
+      });
+
+      await expect(createUserUseCase.execute(payload))
+        .rejects.toThrow(`Tenants with IDs ${fakeTenantId} not found`);
     });
   });
 });

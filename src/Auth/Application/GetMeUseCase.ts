@@ -2,10 +2,10 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 
 import { TenantDomain } from '../Domain/Entities/TenantDomain';
 import { UserDomain } from '../Domain/Entities/UserDomain';
-import { UserPermissionRepository } from '../Infrastructure/repositories/UserPermissionRepository';
-import { UserRepository } from '../Infrastructure/repositories/UserRepository';
-import { UserRoleRepository } from '../Infrastructure/repositories/UserRoleRepository';
-import { UserTenantRepository } from '../Infrastructure/repositories/UserTenantRepository';
+import { UserPermissionRepository } from '../Infrastructure/Repositories/UserPermissionRepository';
+import { UserRepository } from '../Infrastructure/Repositories/UserRepository';
+import { UserRoleRepository } from '../Infrastructure/Repositories/UserRoleRepository';
+import { UserTenantRepository } from '../Infrastructure/Repositories/UserTenantRepository';
 
 type TenantInfo = Pick<TenantDomain, 'id' | 'name' | 'slug'> & { isDefault: boolean };
 type UserInfo = Pick<UserDomain, 'id' | 'username' | 'createdAt' | 'updatedAt'>;

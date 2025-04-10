@@ -4,8 +4,8 @@ import { JwtService } from '@nestjs/jwt';
 
 import { Logger } from '../../../Shared/Presentation/Utils/Logger';
 import { JwtPayload } from '../../Domain/Payloads/JwtPayload';
-import { UserPermissionRepository } from '../../Infrastructure/repositories/UserPermissionRepository';
-import { UserRoleRepository } from '../../Infrastructure/repositories/UserRoleRepository';
+import { UserPermissionRepository } from '../../Infrastructure/Repositories/UserPermissionRepository';
+import { UserRoleRepository } from '../../Infrastructure/Repositories/UserRoleRepository';
 import { PERMISSIONS_KEY } from '../Decorators/RequirePermissions';
 
 @Injectable()

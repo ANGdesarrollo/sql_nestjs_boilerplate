@@ -5,7 +5,7 @@ export const envConfig = {
     .valid('development', 'production', 'test')
     .default('development'),
   PORT: Joi.number().default(8000),
-
+  DATABASE_SCHEMA: Joi.string().default('public'),
   DATABASE_HOST: Joi.string().default('localhost'),
   DATABASE_PORT: Joi.number().default(5432),
   DATABASE_USER: Joi.string().default('postgres'),

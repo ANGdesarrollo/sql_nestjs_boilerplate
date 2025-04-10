@@ -2,8 +2,8 @@ import { Injectable, Logger } from '@nestjs/common';
 
 import { getAllPermissions } from '../../Config/Permissions';
 import { getDefaultRoles } from '../../Config/Roles';
-import { PermissionRepository } from '../Infrastructure/repositories/PermissionRepository';
-import { RoleRepository } from '../Infrastructure/repositories/RoleRepository';
+import { PermissionRepository } from '../Infrastructure/Repositories/PermissionRepository';
+import { RoleRepository } from '../Infrastructure/Repositories/RoleRepository';
 
 @Injectable()
 export class SyncRolesUseCase

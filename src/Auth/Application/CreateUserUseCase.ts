@@ -7,19 +7,12 @@ import { TenantDomain } from '../Domain/Entities/TenantDomain';
 import { UserDomain } from '../Domain/Entities/UserDomain';
 import { CreateUserPayload } from '../Domain/Payloads/CreateUserPayload';
 import { HashService } from '../Domain/Services/HashService';
-import { RoleRepository } from '../Infrastructure/repositories/RoleRepository';
-import { TenantRepository } from '../Infrastructure/repositories/TenantRepository';
-import { UserRepository } from '../Infrastructure/repositories/UserRepository';
-import { UserRoleRepository } from '../Infrastructure/repositories/UserRoleRepository';
-import { UserTenantRepository } from '../Infrastructure/repositories/UserTenantRepository';
+import { RoleRepository } from '../Infrastructure/Repositories/RoleRepository';
+import { TenantRepository } from '../Infrastructure/Repositories/TenantRepository';
+import { UserRepository } from '../Infrastructure/Repositories/UserRepository';
+import { UserRoleRepository } from '../Infrastructure/Repositories/UserRoleRepository';
+import { UserTenantRepository } from '../Infrastructure/Repositories/UserTenantRepository';
 import { CreateUserPayloadSchema } from '../Presentation/Validations/CreateUserSchema';
-
-interface TransactionalRepositories {
-  userRepo: UserRepository;
-  userTenantRepo: UserTenantRepository;
-  userRoleRepo: UserRoleRepository;
-  roleRepo: RoleRepository;
-}
 
 @Injectable()
 export class CreateUserUseCase extends Validator<CreateUserPayload>
@@ -42,7 +35,7 @@ export class CreateUserUseCase extends Validator<CreateUserPayload>
     const data = this.validate(payload);
 
     await this._verifyUserDoesNotExist(data.username);
-    await this._findAndValidateTenants(data.tenantIds, data.defaultTenantId);
+    await this._findAndValidateTenants(data.tenantIds);
 
     await this.dataSource.transaction(async(manager) =>
     {
@@ -69,7 +62,7 @@ export class CreateUserUseCase extends Validator<CreateUserPayload>
     });
   }
 
-  private _getTransactionalRepositories(manager: EntityManager): TransactionalRepositories
+  private _getTransactionalRepositories(manager: EntityManager)
   {
     return {
       userRepo: this.userRepository.withTransaction(manager),
@@ -135,7 +128,7 @@ export class CreateUserUseCase extends Validator<CreateUserPayload>
     }
   }
 
-  private async _findAndValidateTenants(tenantIds: string[], defaultTenantId: string): Promise<TenantDomain[]>
+  private async _findAndValidateTenants(tenantIds: string[]): Promise<TenantDomain[]>
   {
     const tenants = await this.tenantRepository.findByIds(tenantIds);
 
@@ -144,11 +137,6 @@ export class CreateUserUseCase extends Validator<CreateUserPayload>
       const foundIds = tenants.map(t => t.id);
       const missingIds = tenantIds.filter(id => !foundIds.includes(id));
       throw new BadRequestException(`Tenants with IDs ${missingIds.join(', ')} not found`);
-    }
-
-    if (!tenants.some(t => t.id === defaultTenantId))
-    {
-      throw new BadRequestException('Default tenant must be included in the tenant list');
     }
 
     return tenants;

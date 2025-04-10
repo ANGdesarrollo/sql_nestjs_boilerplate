@@ -9,7 +9,7 @@ import { TenantDomain } from './TenantDomain';
 export interface UserDomain extends BaseId, BaseTimeStamp {
   username: string;
   password: string;
-  roles: RoleDomain[];
-  permissions: PermissionDomain[];
-  tenants: TenantDomain[];
+  roles?: RoleDomain[];
+  permissions?: PermissionDomain[];
+  tenants?: TenantDomain[];
 }

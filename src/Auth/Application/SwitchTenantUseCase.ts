@@ -4,7 +4,7 @@ import { JwtService } from '@nestjs/jwt';
 import { Validator } from '../../Shared/Presentation/Validations/Validator';
 import { JwtPayload } from '../Domain/Payloads/JwtPayload';
 import { SwitchTenantPayload } from '../Domain/Payloads/SwitchTenantPayload';
-import { UserTenantRepository } from '../Infrastructure/repositories/UserTenantRepository';
+import { UserTenantRepository } from '../Infrastructure/Repositories/UserTenantRepository';
 import { SwitchValidatorSchema } from '../Presentation/Validations/SwitchTenantValidator';
 
 @Injectable()

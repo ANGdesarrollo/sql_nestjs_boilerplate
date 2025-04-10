@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 
-import { UserTenantRepository } from '../Infrastructure/repositories/UserTenantRepository';
+import { UserTenantRepository } from '../Infrastructure/Repositories/UserTenantRepository';
 
 interface SetDefaultTenantParams {
   userId: string;

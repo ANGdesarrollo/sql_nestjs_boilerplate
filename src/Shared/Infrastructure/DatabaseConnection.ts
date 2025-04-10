@@ -1,12 +1,12 @@
 import { DataSource } from 'typeorm';
 
-import { PermissionEntity } from '../../Auth/Infrastructure/schemas/PermissionSchema';
-import { RoleEntity } from '../../Auth/Infrastructure/schemas/RoleSchema';
-import { TenantEntity } from '../../Auth/Infrastructure/schemas/TenantSchema';
-import { UserPermissionEntity } from '../../Auth/Infrastructure/schemas/UserPermissionSchema';
-import { UserRoleEntity } from '../../Auth/Infrastructure/schemas/UserRoleSchema';
-import { UserEntity } from '../../Auth/Infrastructure/schemas/UserSchema';
-import { UserTenantEntity } from '../../Auth/Infrastructure/schemas/UserTenantSchema';
+import { PermissionEntity } from '../../Auth/Infrastructure/Schemas/PermissionSchema';
+import { RoleEntity } from '../../Auth/Infrastructure/Schemas/RoleSchema';
+import { TenantEntity } from '../../Auth/Infrastructure/Schemas/TenantSchema';
+import { UserPermissionEntity } from '../../Auth/Infrastructure/Schemas/UserPermissionSchema';
+import { UserRoleEntity } from '../../Auth/Infrastructure/Schemas/UserRoleSchema';
+import { UserEntity } from '../../Auth/Infrastructure/Schemas/UserSchema';
+import { UserTenantEntity } from '../../Auth/Infrastructure/Schemas/UserTenantSchema';
 import { EnvService } from '../../Config/Env/EnvService';
 
 export const DatabaseConnections = [
@@ -22,6 +22,7 @@ export const DatabaseConnections = [
         username: configService.database.username,
         password: configService.database.password,
         database: configService.database.name,
+        schema: configService.database.schema,
         entities: [
           UserEntity,
           RoleEntity,

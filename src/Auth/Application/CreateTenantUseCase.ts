@@ -2,7 +2,7 @@ import { Injectable, ConflictException } from '@nestjs/common';
 
 import { Validator } from '../../Shared/Presentation/Validations/Validator';
 import { TenantPayload } from '../Domain/Payloads/TenantPayload';
-import { TenantRepository } from '../Infrastructure/repositories/TenantRepository';
+import { TenantRepository } from '../Infrastructure/Repositories/TenantRepository';
 import { TenantPayloadSchema } from '../Presentation/Validations/TenantSchema';
 
 @Injectable()

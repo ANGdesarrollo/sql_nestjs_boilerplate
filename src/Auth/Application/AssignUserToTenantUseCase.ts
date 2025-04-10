@@ -1,9 +1,9 @@
 import { Injectable, NotFoundException, ConflictException } from '@nestjs/common';
 
 import { UserTenantDomain } from '../Domain/Entities/UserTenantDomain';
-import { TenantRepository } from '../Infrastructure/repositories/TenantRepository';
-import { UserRepository } from '../Infrastructure/repositories/UserRepository';
-import { UserTenantRepository } from '../Infrastructure/repositories/UserTenantRepository';
+import { TenantRepository } from '../Infrastructure/Repositories/TenantRepository';
+import { UserRepository } from '../Infrastructure/Repositories/UserRepository';
+import { UserTenantRepository } from '../Infrastructure/Repositories/UserTenantRepository';
 
 interface AssignUserToTenantParams {
   userId: string;

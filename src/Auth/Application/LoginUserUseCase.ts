@@ -4,8 +4,8 @@ import { JwtService } from '@nestjs/jwt';
 import { JwtPayload } from '../Domain/Payloads/JwtPayload';
 import { LoginUserPayload } from '../Domain/Payloads/LoginUserPayload';
 import { HashService } from '../Domain/Services/HashService';
-import { UserRepository } from '../Infrastructure/repositories/UserRepository';
-import { UserTenantRepository } from '../Infrastructure/repositories/UserTenantRepository';
+import { UserRepository } from '../Infrastructure/Repositories/UserRepository';
+import { UserTenantRepository } from '../Infrastructure/Repositories/UserTenantRepository';
 import { Logger } from '../../Shared/Presentation/Utils/Logger';
 
 @Injectable()

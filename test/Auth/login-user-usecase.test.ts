@@ -6,7 +6,7 @@ import { CreateSuperUserUseCase } from '../../src/Auth/Application/CreateSuperUs
 import { LoginUserUseCase } from '../../src/Auth/Application/LoginUserUseCase';
 import { SyncRolesUseCase } from '../../src/Auth/Application/SyncRolesUseCase';
 import { HashService } from '../../src/Auth/Domain/Services/HashService';
-import { UserRepository } from '../../src/Auth/Infrastructure/repositories/UserRepository';
+import { UserRepository } from '../../src/Auth/Infrastructure/Repositories/UserRepository';
 
 import { CreateSuperUserFixture, SuperUserFixture } from './Fixtures/CreateSuperUserFixture';
 
@@ -30,12 +30,13 @@ describe('LoginUserUseCase - Integration Test', () =>
     hashService = app.get(HashService);
     syncRolesUseCase = app.get(SyncRolesUseCase);
     createSuperUserUseCase = app.get(CreateSuperUserUseCase);
+
+    await syncRolesUseCase.execute();
   });
 
   beforeEach(async() =>
   {
     testUser = CreateSuperUserFixture();
-    await syncRolesUseCase.execute();
     await createSuperUserUseCase.execute(testUser);
   });
 
