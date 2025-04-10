@@ -1,30 +1,26 @@
 import { Injectable, NotFoundException, ConflictException } from '@nestjs/common';
 
+import { slugify } from '../../Shared/Presentation/Utils/Slugify';
 import { Validator } from '../../Shared/Presentation/Validations/Validator';
 import { TenantDomain } from '../Domain/Entities/TenantDomain';
 import { TenantPayload } from '../Domain/Payloads/TenantPayload';
+import { UpdateTenantPayload } from '../Domain/Payloads/UpdateTenantPayload';
 import { TenantRepository } from '../Infrastructure/Repositories/TenantRepository';
 import { TenantPayloadSchema } from '../Presentation/Validations/TenantSchema';
 
-interface UpdateTenantParams {
-  id: string;
-  data: Partial<TenantPayload>;
-}
-
 @Injectable()
-export class UpdateTenantUseCase extends Validator<Partial<TenantPayload>>
+export class UpdateTenantUseCase extends Validator<UpdateTenantPayload>
 {
-  constructor(
-    private readonly tenantRepository: TenantRepository
-  )
+  constructor(private readonly tenantRepository: TenantRepository)
   {
-    super(TenantPayloadSchema.partial());
+    super(TenantPayloadSchema);
   }
 
-  async execute(params: UpdateTenantParams): Promise<TenantDomain>
+  async execute(payload: UpdateTenantPayload): Promise<TenantDomain>
   {
-    const { id, data } = params;
-    const validatedData = this.validate(data);
+    const data = this.validate(payload);
+
+    const id = data.id;
 
     const tenant = await this.tenantRepository.findOneBy('id', id);
     if (!tenant)
@@ -32,24 +28,18 @@ export class UpdateTenantUseCase extends Validator<Partial<TenantPayload>>
       throw new NotFoundException(`Tenant with ID ${id} not found`);
     }
 
-    if (validatedData.name && validatedData.name !== tenant.name)
+    if (data.name && data.name !== tenant.name)
     {
-      const existingTenantByName = await this.tenantRepository.findOneBy('name', validatedData.name);
+      const existingTenantByName = await this.tenantRepository.findOneBy('name', data.name);
       if (existingTenantByName && existingTenantByName.id !== id)
       {
-        throw new ConflictException(`Tenant with name '${validatedData.name}' already exists`);
+        throw new ConflictException(`Tenant with name '${data.name}' already exists`);
       }
     }
-
-    if (validatedData.slug && validatedData.slug !== tenant.slug)
-    {
-      const existingTenantBySlug = await this.tenantRepository.findBySlug(validatedData.slug);
-      if (existingTenantBySlug && existingTenantBySlug.id !== id)
-      {
-        throw new ConflictException(`Tenant with slug '${validatedData.slug}' already exists`);
-      }
-    }
-
-    return this.tenantRepository.update(id, validatedData);
+    const dataTenantToUpdate: TenantPayload  = {
+      ...data,
+      slug: slugify(data.name)
+    };
+    return this.tenantRepository.update(id, dataTenantToUpdate);
   }
 }

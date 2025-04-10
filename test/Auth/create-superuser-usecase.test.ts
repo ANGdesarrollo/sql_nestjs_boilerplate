@@ -3,18 +3,18 @@ import { BadRequestException } from '@nestjs/common';
 import { NestFastifyApplication } from '@nestjs/platform-fastify';
 import { DataSource } from 'typeorm';
 
-import { CreateSuperUserUseCase } from '../../../src/Auth/Application/CreateSuperUserUseCase';
-import { SyncRolesUseCase } from '../../../src/Auth/Application/SyncRolesUseCase';
-import { TenantDomain } from '../../../src/Auth/Domain/Entities/TenantDomain';
-import { HashService } from '../../../src/Auth/Domain/Services/HashService';
-import { RoleRepository } from '../../../src/Auth/Infrastructure/Repositories/RoleRepository';
-import { TenantRepository } from '../../../src/Auth/Infrastructure/Repositories/TenantRepository';
-import { UserRepository } from '../../../src/Auth/Infrastructure/Repositories/UserRepository';
-import { UserRoleRepository } from '../../../src/Auth/Infrastructure/Repositories/UserRoleRepository';
-import { UserTenantRepository } from '../../../src/Auth/Infrastructure/Repositories/UserTenantRepository';
-import { Roles } from '../../../src/Config/Roles';
+import { CreateSuperUserUseCase } from '../../src/Auth/Application/CreateSuperUserUseCase';
+import { SyncRolesUseCase } from '../../src/Auth/Application/SyncRolesUseCase';
+import { TenantDomain } from '../../src/Auth/Domain/Entities/TenantDomain';
+import { HashService } from '../../src/Auth/Domain/Services/HashService';
+import { RoleRepository } from '../../src/Auth/Infrastructure/Repositories/RoleRepository';
+import { TenantRepository } from '../../src/Auth/Infrastructure/Repositories/TenantRepository';
+import { UserRepository } from '../../src/Auth/Infrastructure/Repositories/UserRepository';
+import { UserRoleRepository } from '../../src/Auth/Infrastructure/Repositories/UserRoleRepository';
+import { UserTenantRepository } from '../../src/Auth/Infrastructure/Repositories/UserTenantRepository';
+import { Roles } from '../../src/Config/Roles';
 
-import { CreateSuperUserFixture } from './CreateSuperUserFixture';
+import { CreateSuperUserFixture } from './Fixtures/CreateSuperUserFixture';
 
 describe('CreateSuperUserUseCase - Integration Test', () =>
 {

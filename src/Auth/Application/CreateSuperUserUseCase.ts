@@ -1,15 +1,14 @@
-import { Injectable, ConflictException, BadRequestException, Inject } from '@nestjs/common';
+import { Injectable, BadRequestException, Inject } from '@nestjs/common';
 import { DataSource } from 'typeorm';
 
-import { EnvService } from '../../Config/Env/EnvService';
 import { Roles } from '../../Config/Roles';
+import { Logger } from '../../Shared/Presentation/Utils/Logger';
 import { HashService } from '../Domain/Services/HashService';
 import { RoleRepository } from '../Infrastructure/Repositories/RoleRepository';
 import { TenantRepository } from '../Infrastructure/Repositories/TenantRepository';
 import { UserRepository } from '../Infrastructure/Repositories/UserRepository';
 import { UserRoleRepository } from '../Infrastructure/Repositories/UserRoleRepository';
 import { UserTenantRepository } from '../Infrastructure/Repositories/UserTenantRepository';
-import { Logger } from '../../Shared/Presentation/Utils/Logger';
 
 interface SuperUserConfig {
   username: string;
@@ -64,7 +63,7 @@ export class CreateSuperUserUseCase
       const existingUser = await userRepo.findOneBy('username', superUserConfig.username);
       if (existingUser)
       {
-        console.log(`Super user '${superUserConfig.username}' already exists`);
+        Logger.log(`Super user '${superUserConfig.username}' already exists`);
         return;
       }
 
