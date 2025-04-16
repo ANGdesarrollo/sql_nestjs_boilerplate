@@ -5,7 +5,7 @@ import tseslint from 'typescript-eslint';
 
 export default tseslint.config(
   {
-    ignores: ['.eslintrc.js', 'dist', 'node_modules', 'scripts'],
+    ignores: ['.eslintrc.js', 'dist', 'node_modules', 'scripts']
   },
   eslint.configs.recommended,
   ...tseslint.configs.recommendedTypeChecked,
@@ -18,8 +18,8 @@ export default tseslint.config(
       sourceType: 'module',
       parserOptions: {
         project: 'tsconfig.json',
-        tsconfigRootDir: import.meta.dirname,
-      },
+        tsconfigRootDir: import.meta.dirname
+      }
     },
     plugins: {
       import: eslintPluginImport
@@ -46,8 +46,8 @@ export default tseslint.config(
       }],
       'quotes': ['warn', 'single'],
       'semi': ['warn', 'always'],
-      'semi-spacing': ['warn', { 'before': false, 'after': true }],
-      'comma-spacing': ['warn', { 'before': false, 'after': true }],
+      'semi-spacing': ['warn', { before: false, after: true }],
+      'comma-spacing': ['warn', { before: false, after: true }],
       'space-infix-ops': 'error',
       'space-in-parens': ['warn', 'never'],
       'spaced-comment': ['error', 'always'],
@@ -56,31 +56,31 @@ export default tseslint.config(
       'block-spacing': 'warn',
       'arrow-spacing': 'warn',
       'space-before-function-paren': ['warn', 'never'],
-      'keyword-spacing': ['warn', { 'before': true }],
+      'keyword-spacing': ['warn', { before: true }],
       'linebreak-style': ['error', 'unix'],
       'padded-blocks': ['error', 'never'],
       'eol-last': ['error', 'always'],
       'max-len': [
         'warn',
         {
-          'ignoreStrings': true,
-          'ignoreRegExpLiterals': true,
-          'code': 300
+          ignoreStrings: true,
+          ignoreRegExpLiterals: true,
+          code: 300
         }
       ],
       'no-multiple-empty-lines': 'warn',
       'no-trailing-spaces': [
         'warn',
-        { 'ignoreComments': false, 'skipBlankLines': false }
+        { ignoreComments: false, skipBlankLines: false }
       ],
       'comma-dangle': [
         'error',
         {
-          'arrays': 'never',
-          'objects': 'never',
-          'imports': 'never',
-          'exports': 'never',
-          'functions': 'never'
+          arrays: 'never',
+          objects: 'never',
+          imports: 'never',
+          exports: 'never',
+          functions: 'never'
         }
       ],
 
@@ -121,7 +121,7 @@ export default tseslint.config(
       '@typescript-eslint/no-explicit-any': 'off',
       '@typescript-eslint/no-use-before-define': [
         'warn',
-        { 'functions': true, 'variables': true, 'classes': false }
+        { functions: true, variables: true, classes: false }
       ],
       '@typescript-eslint/no-shadow': 'error',
       '@typescript-eslint/no-unused-vars': 'warn',
@@ -144,16 +144,23 @@ export default tseslint.config(
         'error',
         {
           'newlines-between': 'always',
-          'alphabetize': { 'order': 'asc', 'caseInsensitive': true },
+          'alphabetize': { order: 'asc', caseInsensitive: true },
           'groups': ['builtin', 'external', 'internal', 'parent', 'sibling', 'index'],
           'pathGroups': [
             {
-              'pattern': '@/**',
-              'group': 'internal',
-            },
-          ],
-        },
-      ],
-    },
+              pattern: '@/**',
+              group: 'internal'
+            }
+          ]
+        }
+      ]
+    }
   },
+  // Configuración específica para archivos de test
+  {
+    files: ['**/*.test.ts', '**/test/**/*.ts'],
+    rules: {
+      'no-console': 'off' // Desactivar la regla para los archivos de test
+    }
+  }
 );

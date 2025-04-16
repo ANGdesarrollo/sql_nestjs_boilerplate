@@ -107,4 +107,20 @@ export class UserTenantRepository extends BaseTypeOrmRepositoryImpl<UserTenantPa
       this.handleTypeOrmError(error, 'create');
     }
   }
+
+  // New method to delete a user-tenant relationship
+  async deleteUserTenant(userId: string, tenantId: string): Promise<void>
+  {
+    try
+    {
+      await this.repository.createQueryBuilder()
+        .delete()
+        .where('userId = :userId AND tenantId = :tenantId', { userId, tenantId })
+        .execute();
+    }
+    catch (error)
+    {
+      this.handleTypeOrmError(error, 'deleteUserTenant');
+    }
+  }
 }

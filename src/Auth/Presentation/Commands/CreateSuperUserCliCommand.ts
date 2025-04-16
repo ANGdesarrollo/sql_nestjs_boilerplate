@@ -1,5 +1,6 @@
 import { Command, CommandRunner, Option } from 'nest-commander';
 
+import { Logger } from '../../../Shared/Presentation/Utils/Logger';
 import { CreateSuperUserUseCase } from '../../Application/CreateSuperUserUseCase';
 
 interface CreateSuperUserCommandOptions {
@@ -34,7 +35,7 @@ export class CreateSuperUserCliCommand extends CommandRunner
     }
     catch (error)
     {
-      console.error('Error while creating super user:', error.message);
+      Logger.error('Error while creating super user:', error.message);
       process.exit(1);
     }
   }

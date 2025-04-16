@@ -4,9 +4,9 @@ import { Permissions } from '../../../Config/Permissions';
 import { GetMeUseCase } from '../../Application/GetMeUseCase';
 import { GetUserUseCase } from '../../Application/GetUserUseCase';
 import { RequestWithUserPayload } from '../../Domain/Payloads/RequestWithUserPayload';
+import { UserRoleRepository } from '../../Infrastructure/Repositories/UserRoleRepository';
 import { RequirePermissions } from '../Decorators/RequirePermissions';
 import { AuthGuard } from '../Guards/AuthGuard';
-import { UserRoleRepository } from '../../Infrastructure/Repositories/UserRoleRepository';
 
 @Controller('auth')
 export class AuthGetController

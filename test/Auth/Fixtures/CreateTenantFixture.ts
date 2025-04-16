@@ -1,9 +1,12 @@
 import { faker } from '@faker-js/faker';
 
-import { TenantPayload } from '../../../src/Auth/Domain/Payloads/TenantPayload';
+import { CreateTenantPayload } from '../../../src/Auth/Domain/Payloads/CreateTenantPayload';
 
-export  const createTenantFixture = (): TenantPayload => ({
-  name: faker.company.name(),
-  description: faker.company.catchPhrase(),
-  slug: faker.helpers.slugify(faker.company.name().toLowerCase())
-});
+export  const createTenantFixture = (): CreateTenantPayload =>
+{
+  const tenantName = faker.company.name();
+  return {
+    name: tenantName,
+    description: faker.company.catchPhrase()
+  };
+};

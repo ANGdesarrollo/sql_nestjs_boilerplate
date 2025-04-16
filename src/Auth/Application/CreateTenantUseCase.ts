@@ -30,12 +30,6 @@ export class CreateTenantUseCase extends Validator<CreateTenantPayload>
       throw new ConflictException(`Tenant with name '${data.name}' already exists`);
     }
 
-    const existingTenantBySlug = await this.tenantRepository.findBySlug(tenant.slug);
-    if (existingTenantBySlug)
-    {
-      throw new ConflictException(`Tenant with slug '${tenant.slug}' already exists`);
-    }
-
     await this.tenantRepository.create(tenant);
   }
 }

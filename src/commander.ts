@@ -2,6 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { CommandFactory } from 'nest-commander';
 
 import { AppModule } from './App/AppModule';
+import { Logger } from './Shared/Presentation/Utils/Logger';
 
 void (async() =>
 {
@@ -17,7 +18,7 @@ void (async() =>
   }
   catch (error)
   {
-    console.error('Error executing command:', error);
+    Logger.error('Failed to run command:', error.message);
     process.exit(1);
   }
 })();

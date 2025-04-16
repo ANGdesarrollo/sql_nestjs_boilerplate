@@ -13,13 +13,6 @@ export const clearDatabase = async(dataSource: DataSource) =>
 
     const repository = dataSource.getRepository(entity.name);
 
-    try
-    {
-      await repository.query(`TRUNCATE TABLE "${schemaName}"."${entity.tableName}" CASCADE`);
-    }
-    catch (error)
-    {
-      console.log(`Error truncating ${entity.name}:`, error);
-    }
+    await repository.query(`TRUNCATE TABLE "${schemaName}"."${entity.tableName}" CASCADE`);
   }
 };

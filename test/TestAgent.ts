@@ -8,7 +8,8 @@ import { v4 as uuidv4 } from 'uuid'; // You'll need to install uuid
 import { AppModule } from '../src/App/AppModule';
 import { EnvService } from '../src/Config/Env/EnvService';
 
-export const getTestAgent = async(suiteName?: string) => {
+export const getTestAgent = async(suiteName?: string) =>
+{
   // Generate a unique schema name for this test suite
   const schemaName = `test_${(suiteName || uuidv4()).replace(/[^a-zA-Z0-9_]/g, '_')}`;
 

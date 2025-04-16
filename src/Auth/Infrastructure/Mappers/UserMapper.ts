@@ -4,7 +4,8 @@ import { UserWithRelationsDto } from './Interfaces/UserWithRelationsDto';
 
 export class UserMapper
 {
-  static toDomain(userEntity: UserWithRelationsDto): UserDomain {
+  static toDomain(userEntity: UserWithRelationsDto): UserDomain
+  {
     return {
       id: userEntity.id,
       username: userEntity.username,

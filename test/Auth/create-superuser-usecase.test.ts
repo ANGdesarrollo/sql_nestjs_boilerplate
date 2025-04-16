@@ -1,5 +1,4 @@
 import { faker } from '@faker-js/faker';
-import { BadRequestException } from '@nestjs/common';
 import { NestFastifyApplication } from '@nestjs/platform-fastify';
 import { DataSource } from 'typeorm';
 

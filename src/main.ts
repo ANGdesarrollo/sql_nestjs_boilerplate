@@ -7,6 +7,7 @@ import {
 
 import { AppModule } from './App/AppModule';
 import { EnvService } from './Config/Env/EnvService';
+import { Logger } from './Shared/Presentation/Utils/Logger';
 
 void (async() =>
 {
@@ -30,5 +31,5 @@ void (async() =>
 
   await app.listen(envService.port, '0.0.0.0');
 
-  console.log(`Application is running on: ${await app.getUrl()}`);
+  Logger.log(`Application is running on: ${await app.getUrl()}`);
 })();

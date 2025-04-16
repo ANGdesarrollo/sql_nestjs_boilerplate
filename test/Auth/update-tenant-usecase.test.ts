@@ -37,6 +37,7 @@ describe('UpdateTenantUseCase - Integration Test', () =>
     tenantRepository = app.get(TenantRepository);
   });
 
+
   beforeEach(async() =>
   {
     await syncRolesUseCase.execute();
@@ -47,7 +48,16 @@ describe('UpdateTenantUseCase - Integration Test', () =>
     const tenantPayload = createTenantFixture();
     await createTenantUseCase.execute(tenantPayload);
 
-    existingTenant = await tenantRepository.findBySlug(tenantPayload.slug) as TenantDomain;
+    const tenants = await tenantRepository.list();
+    existingTenant = tenants.find(t => t.name === tenantPayload.name) as TenantDomain;
+
+    if (!existingTenant)
+    {
+      console.error('Tenant not found! Names don\'t match.');
+      console.log('Tenant name in fixture:', tenantPayload.name);
+      console.log('Tenants in database:', tenants.map(t => `${t.name} (${t.slug})`));
+      throw new Error('Test tenant not found in database');
+    }
   });
 
   describe('execute', () =>
@@ -80,11 +90,19 @@ describe('UpdateTenantUseCase - Integration Test', () =>
       await expect(updateTenantUseCase.execute(updateData)).rejects.toThrow(NotFoundException);
     });
 
+
     it('should throw ConflictException when updating to a name that already exists', async() =>
     {
       const anotherTenantPayload = createTenantFixture();
       await createTenantUseCase.execute(anotherTenantPayload);
-      const anotherTenant = await tenantRepository.findBySlug(anotherTenantPayload.slug) as TenantDomain;
+
+      const tenants = await tenantRepository.list();
+      const anotherTenant = tenants.find(t => t.name === anotherTenantPayload.name);
+
+      if (!anotherTenant)
+      {
+        throw new Error('Test setup failed: another tenant not found');
+      }
 
       const updateData: UpdateTenantPayload = {
         id: existingTenant.id,

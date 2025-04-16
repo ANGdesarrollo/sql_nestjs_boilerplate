@@ -9,4 +9,4 @@ export const slugify = (text: string): string =>
     .replace(/--+/g, '-')              // Reemplaza múltiples guiones por uno
     .replace(/^-+/, '')                  // Elimina guiones iniciales
     .replace(/-+$/, '');                 // Elimina guiones finales
-}
+};

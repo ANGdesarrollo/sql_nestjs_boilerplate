@@ -6,6 +6,7 @@ import { clearDatabase } from './ClearDatabase';
 import { getTestAgent } from './TestAgent';
 
 declare global {
+  // eslint-disable-next-line no-var
   var getTestEnv: (suiteName?: string) => Promise<{
     app: NestFastifyApplication;
     dataSource: DataSource;
@@ -35,19 +36,16 @@ function getCurrentTestFile()
 
 beforeAll(async() =>
 {
-  console.log('🚀 Setting up test environment');
   const currentTest = getCurrentTestFile();
   const testEnv = await getTestAgent(currentTest);
   app = testEnv.app;
   dataSource = testEnv.dataSource;
   schemaName = testEnv.schemaName;
-  console.log(`✅ Test environment initialized with schema: ${schemaName}`);
 });
 
 // Drop schema after tests complete
 afterAll(async() =>
 {
-  console.log(`🧹 Dropping schema: ${schemaName}`);
   if (dataSource && dataSource.isInitialized)
   {
     // Drop the schema when we're done
@@ -63,7 +61,6 @@ afterAll(async() =>
 // Clear tables between tests
 afterEach(async() =>
 {
-  console.log('🧹 Clearing tables');
   if (dataSource && dataSource.isInitialized)
   {
     await clearDatabase(dataSource);
