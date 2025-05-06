@@ -9,12 +9,7 @@
   "setupFilesAfterEnv": ["./test/testSetup.ts"],
   "collectCoverage": true,
   "collectCoverageFrom": [
-    "src/**/*.ts",
-    "!src/main.ts",
-    "!src/commander.ts",
-    "!src/**/*.module.ts",
-    "!src/**/*.dto.ts",
-    "!src/**/*.entity.ts"
+    "src/**/Application/**/*.ts"
   ],
   "coverageDirectory": "./coverage",
   "coverageReporters": ["text", "lcov"],
