@@ -38,6 +38,10 @@ export const Permissions = {
     REGISTER: 'auth:register',
     LOGOUT: 'auth:logout',
     CHANGE_PASSWORD: 'auth:change-password'
+  },
+
+  FILE: {
+    UPLOAD: 'file:upload'
   }
 };
 export const getAllPermissions = (): string[] =>

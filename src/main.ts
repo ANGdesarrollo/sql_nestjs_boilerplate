@@ -1,4 +1,5 @@
 import fastifyCookie from '@fastify/cookie';
+import multiPart from '@fastify/multipart';
 import { NestFactory } from '@nestjs/core';
 import {
   FastifyAdapter,
@@ -8,6 +9,7 @@ import {
 import { AppModule } from './App/AppModule';
 import { EnvService } from './Config/Env/EnvService';
 import { Logger } from './Shared/Presentation/Utils/Logger';
+
 
 void (async() =>
 {
@@ -23,6 +25,9 @@ void (async() =>
   const envService = app.get(EnvService);
 
   app.setGlobalPrefix('api');
+
+  await app.register(multiPart);
+
 
   await app.register(fastifyCookie, {
     secret: envService.cookie.secret,

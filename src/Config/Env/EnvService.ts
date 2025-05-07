@@ -84,4 +84,17 @@ export class EnvService
       expiration: this.get('COOKIE_EXPIRATION') as number
     };
   }
+
+  get minio() {
+    return {
+      host: this.get('MINIO_HOST') as string,
+      port: this.get('MINIO_PORT') as number,
+      accessKey: this.get('MINIO_ACCESS_KEY') as string,
+      secretKey: this.get('MINIO_SECRET_KEY') as string,
+      useSSL: this.get('MINIO_USE_SSL') as boolean,
+      publicBucket: this.get('MINIO_PUBLIC_BUCKET') as string,
+      privateBucket: this.get('MINIO_PRIVATE_BUCKET') as string,
+      region: this.get('MINIO_REGION') as string
+    };
+  }
 }

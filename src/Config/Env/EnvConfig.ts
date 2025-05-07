@@ -1,3 +1,4 @@
+// src/Config/Env/EnvConfig.ts (Update)
 import * as Joi from 'joi';
 
 export const envConfig = {
@@ -20,7 +21,16 @@ export const envConfig = {
   JWT_EXPIRES_IN: Joi.string().default('1h'),
 
   COOKIE_SECRET: Joi.string().required(),
-  COOKIE_EXPIRATION: Joi.number().default(3600000)
+  COOKIE_EXPIRATION: Joi.number().default(3600000),
+
+  MINIO_HOST: Joi.string().default('localhost'),
+  MINIO_PORT: Joi.number().default(9000),
+  MINIO_ACCESS_KEY: Joi.string().default('minioadmin'),
+  MINIO_SECRET_KEY: Joi.string().default('minioadmin'),
+  MINIO_USE_SSL: Joi.boolean().default(false),
+  MINIO_PUBLIC_BUCKET: Joi.string().default('public'),
+  MINIO_PRIVATE_BUCKET: Joi.string().default('private'),
+  MINIO_REGION: Joi.string().default('us-east-1')
 };
 
 export type EnvironmentConfig = {
