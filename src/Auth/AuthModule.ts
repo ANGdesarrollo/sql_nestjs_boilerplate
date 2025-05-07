@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Global, Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { DataSource } from 'typeorm';
 
@@ -7,6 +7,8 @@ import { EnvService } from '../Config/Env/EnvService';
 import { AuthUseCases } from './Application';
 import { HashService } from './Domain/Services/HashService';
 import { AuthRepositories } from './Infrastructure/Repositories';
+import { UserPermissionRepository } from './Infrastructure/Repositories/UserPermissionRepository';
+import { UserRoleRepository } from './Infrastructure/Repositories/UserRoleRepository';
 import { PermissionEntity } from './Infrastructure/Schemas/PermissionSchema';
 import { RoleEntity } from './Infrastructure/Schemas/RoleSchema';
 import { TenantEntity } from './Infrastructure/Schemas/TenantSchema';
@@ -19,6 +21,7 @@ import { SyncRolesCliCommand } from './Presentation/Commands/SyncRolesCliCommand
 import { AuthControllers } from './Presentation/Controllers';
 import { AuthGuard } from './Presentation/Guards/AuthGuard';
 
+@Global()
 @Module({
   imports: [
     JwtModule.registerAsync({
@@ -73,6 +76,6 @@ import { AuthGuard } from './Presentation/Guards/AuthGuard';
       inject: ['DATA_SOURCE']
     }
   ],
-  exports: [AuthGuard, JwtModule]
+  exports: [AuthGuard, JwtModule,   UserRoleRepository, UserPermissionRepository]
 })
 export class AuthModule {}

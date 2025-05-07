@@ -8,6 +8,7 @@ import { UserRoleEntity } from '../../Auth/Infrastructure/Schemas/UserRoleSchema
 import { UserEntity } from '../../Auth/Infrastructure/Schemas/UserSchema';
 import { UserTenantEntity } from '../../Auth/Infrastructure/Schemas/UserTenantSchema';
 import { EnvService } from '../../Config/Env/EnvService';
+import { FileEntity } from '../../File/Infrastructure/Schemas/FileSchema';
 
 export const DatabaseConnections = [
   {
@@ -30,7 +31,8 @@ export const DatabaseConnections = [
           UserRoleEntity,
           UserPermissionEntity,
           TenantEntity,
-          UserTenantEntity
+          UserTenantEntity,
+          FileEntity
         ],
         synchronize: !configService.isProduction,
         logging: !configService.isProduction && !configService.isTest && !configService.isDevelopment

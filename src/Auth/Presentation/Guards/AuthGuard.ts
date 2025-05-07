@@ -30,6 +30,7 @@ export class AuthGuard implements CanActivate
     if (!requiredPermissions || requiredPermissions.length === 0)
     {
       const token = this.extractTokenFromRequest(request);
+
       if (!token)
       {
         throw new UnauthorizedException('No authentication token provided');
@@ -59,7 +60,6 @@ export class AuthGuard implements CanActivate
       request.user = decodedToken;
 
       const userPermissions = await this.getUserPermissions(decodedToken.userId);
-      Logger.log(userPermissions, 'soy token');
 
       const hasPermission = this.checkPermissions(userPermissions, requiredPermissions);
 
@@ -84,6 +84,7 @@ export class AuthGuard implements CanActivate
   private extractTokenFromRequest(request: any): string | null
   {
     const authHeader = request.headers.authorization;
+
     if (authHeader && authHeader.startsWith('Bearer '))
     {
       return authHeader.substring(7);
@@ -100,7 +101,7 @@ export class AuthGuard implements CanActivate
   private async getUserPermissions(userId: string): Promise<string[]>
   {
     const userRoles = await this.userRoleRepository.getUserRoles(userId);
-    Logger.error(userRoles, 'soy user roles');
+
     const permissionsSet = new Set<string>();
 
     userRoles.forEach((userRole) =>

@@ -30,13 +30,16 @@ describe('SyncRolesUseCase - Integration Test', () =>
   beforeEach(async() =>
   {
     // Clear permissions and roles tables manually to test the creation path
-    if ('schema' in dataSource.options) {
+    if ('schema' in dataSource.options)
+    {
       await dataSource.query(`TRUNCATE TABLE "${dataSource.options.schema}"."role_permissions" CASCADE`);
     }
-    if ('schema' in dataSource.options) {
+    if ('schema' in dataSource.options)
+    {
       await dataSource.query(`TRUNCATE TABLE "${dataSource.options.schema}"."permissions" CASCADE`);
     }
-    if ('schema' in dataSource.options) {
+    if ('schema' in dataSource.options)
+    {
       await dataSource.query(`TRUNCATE TABLE "${dataSource.options.schema}"."roles" CASCADE`);
     }
   });

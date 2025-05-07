@@ -85,7 +85,8 @@ export class EnvService
     };
   }
 
-  get minio() {
+  get minio()
+  {
     return {
       host: this.get('MINIO_HOST') as string,
       port: this.get('MINIO_PORT') as number,

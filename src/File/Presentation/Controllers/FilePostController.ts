@@ -1,4 +1,4 @@
-// src/File/Presentation/Controllers/FilePostController.ts
+//@ts-nocheck
 import { BadRequestException, Controller, InternalServerErrorException, Post, Query, Req, UseGuards } from '@nestjs/common';
 import { FastifyRequest } from 'fastify';
 

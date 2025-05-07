@@ -1,7 +1,7 @@
 import { Injectable, Inject, NotFoundException, ConflictException, BadRequestException } from '@nestjs/common';
 import { DataSource, EntityManager } from 'typeorm';
+import 'fastify';
 
-import { Logger } from '../../Shared/Presentation/Utils/Logger';
 import { Validator } from '../../Shared/Presentation/Validations/Validator';
 import { UserDomain } from '../Domain/Entities/UserDomain';
 import { UpdateUserPayload } from '../Domain/Payloads/UpdateUserPayload';

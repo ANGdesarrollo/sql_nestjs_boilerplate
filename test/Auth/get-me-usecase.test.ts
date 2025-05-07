@@ -13,7 +13,6 @@ import { RoleRepository } from '../../src/Auth/Infrastructure/Repositories/RoleR
 import { TenantRepository } from '../../src/Auth/Infrastructure/Repositories/TenantRepository';
 import { UserPermissionRepository } from '../../src/Auth/Infrastructure/Repositories/UserPermissionRepository';
 import { UserRepository } from '../../src/Auth/Infrastructure/Repositories/UserRepository';
-import { UserRoleRepository } from '../../src/Auth/Infrastructure/Repositories/UserRoleRepository';
 import { UserTenantRepository } from '../../src/Auth/Infrastructure/Repositories/UserTenantRepository';
 import { Roles } from '../../src/Config/Roles';
 
@@ -32,7 +31,6 @@ describe('GetMeUseCase - Integration Test', () =>
   let userRepository: UserRepository;
   let tenantRepository: TenantRepository;
   let userTenantRepository: UserTenantRepository;
-  let userRoleRepository: UserRoleRepository;
   let userPermissionRepository: UserPermissionRepository;
   let permissionRepository: PermissionRepository;
   let roleRepository: RoleRepository;
@@ -54,7 +52,6 @@ describe('GetMeUseCase - Integration Test', () =>
     userRepository = app.get(UserRepository);
     tenantRepository = app.get(TenantRepository);
     userTenantRepository = app.get(UserTenantRepository);
-    userRoleRepository = app.get(UserRoleRepository);
     userPermissionRepository = app.get(UserPermissionRepository);
     permissionRepository = app.get(PermissionRepository);
     roleRepository = app.get(RoleRepository);

@@ -3,6 +3,7 @@ import { DataSource } from 'typeorm';
 
 import { FileUseCases } from './Application';
 import { MinioService } from './Domain/Services/MinioService';
+import { FileRepository } from './Infrastructure/Repositories/FileRepository';
 import { FileEntity } from './Infrastructure/Schemas/FileSchema';
 import { FileControllers } from './Presentation/Controllers';
 
@@ -12,6 +13,7 @@ import { FileControllers } from './Presentation/Controllers';
   ],
   providers: [
     ...FileUseCases,
+    FileRepository,
     MinioService,
     {
       provide: 'FILE_REPOSITORY',
