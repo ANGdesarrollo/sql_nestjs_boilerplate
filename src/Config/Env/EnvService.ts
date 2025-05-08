@@ -98,4 +98,16 @@ export class EnvService
       region: this.get('MINIO_REGION') as string
     };
   }
+
+  get smtp()
+  {
+    return {
+      host: this.get('SMTP_HOST') as string,
+      port: this.get('SMTP_PORT') as number,
+      secure: this.get('SMTP_SECURE') as boolean,
+      user: this.get('SMTP_USER') as string,
+      pass: this.get('SMTP_PASS') as string,
+      from: this.get('SMTP_FROM') as string
+    };
+  }
 }

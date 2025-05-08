@@ -30,7 +30,15 @@ export const envConfig = {
   MINIO_USE_SSL: Joi.boolean().default(false),
   MINIO_PUBLIC_BUCKET: Joi.string().default('public'),
   MINIO_PRIVATE_BUCKET: Joi.string().default('private'),
-  MINIO_REGION: Joi.string().default('us-east-1')
+  MINIO_REGION: Joi.string().default('us-east-1'),
+
+  SMTP_HOST: Joi.string().default('localhost'),
+  SMTP_PORT: Joi.number().default(1025),
+  SMTP_SECURE: Joi.boolean().default(false),
+  SMTP_USER: Joi.string().allow('').default(''),
+  SMTP_PASS: Joi.string().allow('').default(''),
+  SMTP_FROM: Joi.string().default('ZonaDev Notifier <no-reply@zonadev.com>'),
+
 };
 
 export type EnvironmentConfig = {
