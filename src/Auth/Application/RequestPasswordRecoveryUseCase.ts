@@ -29,7 +29,7 @@ export class RequestPasswordRecoveryUseCase
     await this.tokenRepository.invalidateUserTokens(user.id);
 
     const token = uuidv4();
-    const expiresAt = addHours(new Date(), 24); // Token valid for 24 hours
+    const expiresAt = addHours(new Date(), 24);
 
     await this.tokenRepository.create({
       token,

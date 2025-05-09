@@ -25,5 +25,5 @@ export const AuthUseCases = [
   SwitchTenantUseCase,
   UpdateTenantUseCase,
   RequestPasswordRecoveryUseCase,
-  ResetPasswordUseCase
+  ResetPasswordUseCase,
 ];

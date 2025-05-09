@@ -21,6 +21,6 @@ import { NotificationTestController } from './Presentation/Controllers/Notificat
       useClass: NodemailerEmailServiceImpl
     }
   ],
-  exports: []
+  exports: [SendNotificationUseCase]
 })
 export class NotificationsModule {}

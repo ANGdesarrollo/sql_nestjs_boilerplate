@@ -4,8 +4,8 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
 import { AuthModule } from '../Auth/AuthModule';
 import { ConfigModule } from '../Config/ConfigModule';
 import { FileModule } from '../File/FileModule';
-import { SharedModule } from '../Shared/SharedModule';
 import { NotificationsModule } from '../Notifications/NotificationModule';
+import { SharedModule } from '../Shared/SharedModule';
 
 @Module({
   imports: [
