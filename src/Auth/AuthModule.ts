@@ -7,6 +7,7 @@ import { EnvService } from '../Config/Env/EnvService';
 import { AuthUseCases } from './Application';
 import { HashService } from './Domain/Services/HashService';
 import { AuthRepositories } from './Infrastructure/Repositories';
+import { PasswordRecoveryTokenRepository } from './Infrastructure/Repositories/PasswordRecoveryTokenRepository';
 import { UserPermissionRepository } from './Infrastructure/Repositories/UserPermissionRepository';
 import { UserRoleRepository } from './Infrastructure/Repositories/UserRoleRepository';
 import { PermissionEntity } from './Infrastructure/Schemas/PermissionSchema';
@@ -20,6 +21,7 @@ import { CreateSuperUserCliCommand } from './Presentation/Commands/CreateSuperUs
 import { SyncRolesCliCommand } from './Presentation/Commands/SyncRolesCliCommand';
 import { AuthControllers } from './Presentation/Controllers';
 import { AuthGuard } from './Presentation/Guards/AuthGuard';
+import { PasswordRecoveryTokenEntity } from './Infrastructure/Schemas/PasswordRecoveryTokenSchema';
 
 @Global()
 @Module({
@@ -73,6 +75,11 @@ import { AuthGuard } from './Presentation/Guards/AuthGuard';
     {
       provide: 'USER_TENANT_REPOSITORY',
       useFactory: (dataSource: DataSource) => dataSource.getRepository(UserTenantEntity),
+      inject: ['DATA_SOURCE']
+    },
+    {
+      provide: 'PASSWORD_RECOVERY_TOKEN_REPOSITORY',
+      useFactory: (dataSource: DataSource) => dataSource.getRepository(PasswordRecoveryTokenEntity),
       inject: ['DATA_SOURCE']
     }
   ],

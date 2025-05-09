@@ -1,3 +1,4 @@
+import { PasswordRecoveryTokenRepository } from './PasswordRecoveryTokenRepository';
 import { PermissionRepository } from './PermissionRepository';
 import { RoleRepository } from './RoleRepository';
 import { TenantRepository } from './TenantRepository';
@@ -13,5 +14,6 @@ export const AuthRepositories = [
   UserRoleRepository,
   UserPermissionRepository,
   TenantRepository,
-  UserTenantRepository
+  UserTenantRepository,
+  PasswordRecoveryTokenRepository
 ];

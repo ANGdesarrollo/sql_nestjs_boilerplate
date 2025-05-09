@@ -1,5 +1,6 @@
 import { DataSource } from 'typeorm';
 
+import { PasswordRecoveryTokenEntity } from '../../Auth/Infrastructure/Schemas/PasswordRecoveryTokenSchema';
 import { PermissionEntity } from '../../Auth/Infrastructure/Schemas/PermissionSchema';
 import { RoleEntity } from '../../Auth/Infrastructure/Schemas/RoleSchema';
 import { TenantEntity } from '../../Auth/Infrastructure/Schemas/TenantSchema';
@@ -32,7 +33,8 @@ export const DatabaseConnections = [
           UserPermissionEntity,
           TenantEntity,
           UserTenantEntity,
-          FileEntity
+          FileEntity,
+          PasswordRecoveryTokenEntity
         ],
         synchronize: !configService.isProduction,
         logging: !configService.isProduction && !configService.isTest && !configService.isDevelopment

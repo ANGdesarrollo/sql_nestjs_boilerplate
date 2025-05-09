@@ -9,6 +9,8 @@ import { SwitchTenantUseCase } from './SwitchTenantUseCase';
 import { SyncRolesUseCase } from './SyncRolesUseCase';
 import { UpdateTenantUseCase } from './UpdateTenantUseCase';
 import { UpdateUserUseCase } from './UpdateUserUseCase';
+import { RequestPasswordRecoveryUseCase } from './RequestPasswordRecoveryUseCase';
+import { ResetPasswordUseCase } from './ResetPasswordUseCase';
 
 export const AuthUseCases = [
   LoginUserUseCase,
@@ -21,5 +23,7 @@ export const AuthUseCases = [
   GetUserUseCase,
   GetMeUseCase,
   SwitchTenantUseCase,
-  UpdateTenantUseCase
+  UpdateTenantUseCase,
+  RequestPasswordRecoveryUseCase,
+  ResetPasswordUseCase
 ];
