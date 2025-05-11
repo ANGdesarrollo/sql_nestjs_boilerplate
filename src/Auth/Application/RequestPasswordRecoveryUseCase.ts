@@ -19,7 +19,7 @@ export class RequestPasswordRecoveryUseCase
 
   async execute(email: string): Promise<void>
   {
-    const user = await this.userRepository.findOneBy('username', email);
+    const user = await this.userRepository.findOneBy({ username : email });
 
     if (!user)
     {

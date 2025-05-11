@@ -20,7 +20,7 @@ export class DownloadFileUseCase
 
   async execute(payload: DownloadFilePayload): Promise<DownloadResult>
   {
-    const fileMetadata = await this.fileRepository.findOneBy('id', payload.fileId);
+    const fileMetadata = await this.fileRepository.findOneBy({ id : payload.fileId });
 
     if (!fileMetadata)
     {

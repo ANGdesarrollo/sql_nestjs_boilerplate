@@ -38,7 +38,7 @@ export class LoginUserUseCase
 
   private async findUser(username: string)
   {
-    const user = await this.userRepository.findOneBy('username', username);
+    const user = await this.userRepository.findOneBy({ username });
     if (!user)
     {
       throw new UnauthorizedException('User or password incorrect');

@@ -37,7 +37,7 @@ describe('GetUserUseCase - Integration Test', () =>
     const superUserFixture = CreateSuperUserFixture();
     await createSuperUserUseCase.execute(superUserFixture);
 
-    testUser = await userRepository.findOneBy('username', superUserFixture.username) as UserDomain;
+    testUser = await userRepository.findOneBy({ username: superUserFixture.username }) as UserDomain;
   });
 
   describe('execute', () =>

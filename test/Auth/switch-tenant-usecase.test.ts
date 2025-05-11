@@ -55,7 +55,7 @@ describe('SwitchTenantUseCase - Integration Test', () =>
     const superUserFixture = CreateSuperUserFixture();
     await createSuperUserUseCase.execute(superUserFixture);
 
-    user = await userRepository.findOneBy('username', superUserFixture.username) as UserDomain;
+    user = await userRepository.findOneBy({ username: superUserFixture.username }) as UserDomain;
 
     const userTenants = await userTenantRepository.findUserTenants(user.id);
     tenant1 = userTenants[0].tenant;

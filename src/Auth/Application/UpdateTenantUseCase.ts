@@ -22,7 +22,7 @@ export class UpdateTenantUseCase extends Validator<UpdateTenantPayload>
 
     const id = data.id;
 
-    const tenant = await this.tenantRepository.findOneBy('id', id);
+    const tenant = await this.tenantRepository.findOneBy({id});
     if (!tenant)
     {
       throw new NotFoundException(`Tenant with ID ${id} not found`);
@@ -30,7 +30,7 @@ export class UpdateTenantUseCase extends Validator<UpdateTenantPayload>
 
     if (data.name && data.name !== tenant.name)
     {
-      const existingTenantByName = await this.tenantRepository.findOneBy('name', data.name);
+      const existingTenantByName = await this.tenantRepository.findOneBy({ name: data.name });
       if (existingTenantByName && existingTenantByName.id !== id)
       {
         throw new ConflictException(`Tenant with name '${data.name}' already exists`);

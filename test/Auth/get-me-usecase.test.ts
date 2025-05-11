@@ -78,7 +78,7 @@ describe('GetMeUseCase - Integration Test', () =>
     // Create super user
     const superUserFixture = CreateSuperUserFixture();
     await createSuperUserUseCase.execute(superUserFixture);
-    superUser = await userRepository.findOneBy('username', superUserFixture.username) as UserDomain;
+    superUser = await userRepository.findOneBy({ username: superUserFixture.username }) as UserDomain;
 
     // Create regular user
     const userPayload = CreateUserFixture({
@@ -87,7 +87,7 @@ describe('GetMeUseCase - Integration Test', () =>
     });
 
     await createUserUseCase.execute(userPayload);
-    regularUser = await userRepository.findOneBy('username', userPayload.username) as UserDomain;
+    regularUser = await userRepository.findOneBy({ username: userPayload.username }) as UserDomain;
   });
 
   describe('execute', () =>
@@ -191,7 +191,7 @@ describe('GetMeUseCase - Integration Test', () =>
     it('should include direct permissions assigned to the user', async() =>
     {
       const allPermissions = await permissionRepository.list();
-      const userRole = await roleRepository.findOneBy('name', Roles.USER);
+      const userRole = await roleRepository.findOneBy({ name:  Roles.USER });
       const userRolePermissions = userRole?.permissions || [];
       const userRolePermissionIds = userRolePermissions.map(p => p.id);
 

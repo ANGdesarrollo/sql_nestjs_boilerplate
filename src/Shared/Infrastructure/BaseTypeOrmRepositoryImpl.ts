@@ -43,23 +43,18 @@ export abstract class BaseTypeOrmRepositoryImpl<D, T extends ObjectLiteral> impl
   }
 
 
-  async findOneBy<K extends keyof T>(
-    fieldName: K,
-    fieldValue: T[K],
+  async findOneBy(
+    conditions: Partial<T>,
     relations?: string[]
   ): Promise<T | null>
   {
     try
     {
-      const where = {} as any;
-      where[fieldName] = fieldValue;
-
-      const options: FindOneOptions<T> = { where };
+      const options: FindOneOptions<T> = { where: conditions };
       if (relations && relations.length > 0)
       {
         options.relations = relations;
       }
-
       return await this.repository.findOne(options);
     }
     catch (error)

@@ -41,7 +41,7 @@ export class SyncRolesUseCase
 
     await Promise.all(permissionsList.map(async permissionName =>
     {
-      const existingPermission = await this.permissionRepository.findOneBy('name', permissionName);
+      const existingPermission = await this.permissionRepository.findOneBy({ name: permissionName });
 
       if (!existingPermission)
       {
@@ -64,13 +64,13 @@ export class SyncRolesUseCase
       try
       {
         const permissionPromises = roleData.permissions.map(permissionName =>
-          this.permissionRepository.findOneBy('name', permissionName)
+          this.permissionRepository.findOneBy({ name: permissionName })
         );
 
         const permissionResults = await Promise.all(permissionPromises);
         const permissionObjects = permissionResults.filter(p => p !== null);
 
-        const existingRole = await this.roleRepository.findOneBy('name', roleData.name);
+        const existingRole = await this.roleRepository.findOneBy({ name :roleData.name });
 
         if (!existingRole)
         {

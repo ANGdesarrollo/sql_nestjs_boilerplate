@@ -24,7 +24,7 @@ export class CreateTenantUseCase extends Validator<CreateTenantPayload>
       slug: slugify(data.name)
     };
 
-    const existingTenantByName = await this.tenantRepository.findOneBy('name', tenant.name);
+    const existingTenantByName = await this.tenantRepository.findOneBy({ name: tenant.name });
     if (existingTenantByName)
     {
       throw new ConflictException(`Tenant with name '${data.name}' already exists`);

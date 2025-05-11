@@ -72,7 +72,7 @@ describe('CreateUserUseCase - Integration Test', () =>
 
       await createUserUseCase.execute(payload);
 
-      const user = await userRepository.findOneBy('username', payload.username);
+      const user = await userRepository.findOneBy({ username: payload.username });
       expect(user).toBeDefined();
       expect(user?.username).toBe(payload.username);
 
@@ -81,7 +81,7 @@ describe('CreateUserUseCase - Integration Test', () =>
       expect(userTenants[0].tenant.id).toBe(tenantId);
       expect(userTenants[0].isDefault).toBe(true);
 
-      const defaultRole = await roleRepository.findOneBy('name', Roles.USER);
+      const defaultRole = await roleRepository.findOneBy({ name : Roles.USER });
       const userRoles = await userRoleRepository.getUserRoles(user?.id as string);
       expect(userRoles).toHaveLength(1);
       expect(userRoles[0].role.id).toBe(defaultRole?.id);
@@ -139,7 +139,7 @@ describe('CreateUserUseCase - Integration Test', () =>
 
       await createUserUseCase.execute(payload);
 
-      const user = await userRepository.findOneBy('username', payload.username);
+      const user = await userRepository.findOneBy({ username: payload.username });
       const userTenants = await userTenantRepository.findUserTenants(user?.id as string);
 
       expect(userTenants).toHaveLength(2);

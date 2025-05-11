@@ -27,7 +27,7 @@ export class GetMeUseCase
     tenants: TenantInfo[];
   }>
   {
-    const user = await this.userRepository.findOneBy('id', userId);
+    const user = await this.userRepository.findOneBy({  id: userId });
     if (!user)
     {
       throw new NotFoundException(`User with ID ${userId} not found`);

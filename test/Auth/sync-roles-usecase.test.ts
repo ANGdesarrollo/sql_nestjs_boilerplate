@@ -136,7 +136,7 @@ describe('SyncRolesUseCase - Integration Test', () =>
       await syncRolesUseCase.execute();
 
       // Get the super admin role
-      const superAdminRole = await roleRepository.findOneBy('name', 'super_admin');
+      const superAdminRole = await roleRepository.findOneBy({ name: 'super_admin' });
       expect(superAdminRole).toBeDefined();
 
       // Modify role description
@@ -155,7 +155,7 @@ describe('SyncRolesUseCase - Integration Test', () =>
       await syncRolesUseCase.execute();
 
       // Assert - Role description should be updated back to default
-      const updatedRole = await roleRepository.findOneBy('id', superAdminRole!.id);
+      const updatedRole = await roleRepository.findOneBy({ id: superAdminRole!.id });
       expect(updatedRole?.description).not.toBe('Modified description');
 
       // Check permissions count directly with query

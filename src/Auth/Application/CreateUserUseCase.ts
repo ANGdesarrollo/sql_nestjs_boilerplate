@@ -107,7 +107,7 @@ export class CreateUserUseCase extends Validator<CreateUserPayload>
     user: UserDomain
   ): Promise<void>
   {
-    const defaultRole = await roleRepo.findOneBy('name', Roles.USER);
+    const defaultRole = await roleRepo.findOneBy({ name :  Roles.USER });
     if (!defaultRole)
     {
       throw new BadRequestException('Default user role not found. Make sure to run the sync:roles command');
@@ -121,7 +121,7 @@ export class CreateUserUseCase extends Validator<CreateUserPayload>
 
   private async _verifyUserDoesNotExist(username: string): Promise<void>
   {
-    const existingUser = await this.userRepository.findOneBy('username', username);
+    const existingUser = await this.userRepository.findOneBy({ username });
     if (existingUser)
     {
       throw new ConflictException(`User with username '${username}' already exists`);

@@ -19,7 +19,7 @@ export class GetFileUseCase
 
   async execute(fileId: string): Promise<FileWithUrl>
   {
-    const file = await this.fileRepository.findOneBy('id', fileId);
+    const file = await this.fileRepository.findOneBy({ id: fileId });
 
     if (!file)
     {

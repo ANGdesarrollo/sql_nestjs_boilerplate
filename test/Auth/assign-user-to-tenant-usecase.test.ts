@@ -89,7 +89,7 @@ describe('AssignUserToTenantUseCase - Integration Test', () =>
     });
 
     await createUserUseCase.execute(userPayload);
-    user = await userRepository.findOneBy('username', userPayload.username) as UserDomain;
+    user = await userRepository.findOneBy({ username : userPayload.username }) as UserDomain;
   });
 
   describe('execute', () =>

@@ -24,13 +24,13 @@ export class AssignUserToTenantUseCase
   {
     const { userId, tenantId, setAsDefault = false } = params;
 
-    const user = await this.userRepository.findOneBy('id', userId);
+    const user = await this.userRepository.findOneBy({ id : userId });
     if (!user)
     {
       throw new NotFoundException(`User with ID ${userId} not found`);
     }
 
-    const tenant = await this.tenantRepository.findOneBy('id', tenantId);
+    const tenant = await this.tenantRepository.findOneBy({ id : tenantId });
     if (!tenant)
     {
       throw new NotFoundException(`Tenant with ID ${tenantId} not found`);

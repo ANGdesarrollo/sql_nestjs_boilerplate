@@ -67,7 +67,7 @@ describe('CreateSuperUserUseCase - Integration Test', () =>
       userRoleRepo: UserRoleRepository
     ) =>
     {
-      const expectedRole = await roleRepo.findOneBy('name', expectedRoleName);
+      const expectedRole = await roleRepo.findOneBy({ name: expectedRoleName });
       expect(expectedRole).toBeDefined();
 
       const userRoles = await userRoleRepo.getUserRoles(userId);
@@ -79,7 +79,7 @@ describe('CreateSuperUserUseCase - Integration Test', () =>
     {
       await createSuperUserUseCase.execute();
 
-      const user = await userRepository.findOneBy('username', 'superadmin@node.com');
+      const user = await userRepository.findOneBy({ username : 'superadmin@node.com' });
       expect(user?.username).toBe('superadmin@node.com');
 
       const userDomain = await userRepository.findUserWithRelations(user?.id as string);
@@ -94,7 +94,7 @@ describe('CreateSuperUserUseCase - Integration Test', () =>
 
       await createSuperUserUseCase.execute(superUserConfig);
 
-      const user = await userRepository.findOneBy('username', superUserConfig.username);
+      const user = await userRepository.findOneBy({ username:  superUserConfig.username });
       expect(user?.username).toBe(superUserConfig.username);
 
       const userDomain = await userRepository.findUserWithRelations(user?.id as string);
@@ -126,7 +126,7 @@ describe('CreateSuperUserUseCase - Integration Test', () =>
 
       await createSuperUserUseCase.execute(superUserConfig);
 
-      const user = await userRepository.findOneBy('username', superUserConfig.username);
+      const user = await userRepository.findOneBy({ username : superUserConfig.username });
       const userDomain = await userRepository.findUserWithRelations(user?.id as string);
 
       expectTenantData(userDomain, {
@@ -187,7 +187,7 @@ describe('CreateSuperUserUseCase - Integration Test', () =>
 
       await createSuperUserUseCase.execute(superUserConfig);
 
-      const user = await userRepository.findOneBy('username', superUserConfig.username);
+      const user = await userRepository.findOneBy({ username : superUserConfig.username });
       expect(user?.password).toBeTruthy();
       expect(user?.password.length).toBeGreaterThan(0);
 

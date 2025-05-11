@@ -47,7 +47,7 @@ export class CreateSuperUserUseCase
       const roleRepo = this.roleRepository.withTransaction(manager);
       const userRoleRepo = this.userRoleRepository.withTransaction(manager);
 
-      const superAdminRole = await roleRepo.findOneBy('name', Roles.SUPER_ADMIN);
+      const superAdminRole = await roleRepo.findOneBy({ name :  Roles.SUPER_ADMIN });
       if (!superAdminRole)
       {
         throw new BadRequestException('Super admin role not found. Make sure to run the sync:roles command first');
@@ -60,7 +60,7 @@ export class CreateSuperUserUseCase
         description: 'System tenant for super administrators'
       });
 
-      const existingUser = await userRepo.findOneBy('username', superUserConfig.username);
+      const existingUser = await userRepo.findOneBy({ username : superUserConfig.username });
       if (existingUser)
       {
         Logger.log(`Super user '${superUserConfig.username}' already exists`);

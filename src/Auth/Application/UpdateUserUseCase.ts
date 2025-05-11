@@ -30,7 +30,7 @@ export class UpdateUserUseCase extends Validator<UpdateUserPayload>
     const data = this.validate(payload);
     const { id, username, password, tenantChanges } = data;
 
-    const existingUser = await this.userRepository.findOneBy('id', id);
+    const existingUser = await this.userRepository.findOneBy({ id });
 
     if (!existingUser)
     {
@@ -39,7 +39,7 @@ export class UpdateUserUseCase extends Validator<UpdateUserPayload>
 
     if (username && username !== existingUser.username)
     {
-      const userWithUsername = await this.userRepository.findOneBy('username', username);
+      const userWithUsername = await this.userRepository.findOneBy({ username });
       if (userWithUsername && userWithUsername.id !== id)
       {
         throw new ConflictException(`User with username '${username}' already exists`);

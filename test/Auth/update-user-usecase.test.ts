@@ -94,7 +94,7 @@ describe('UpdateUserUseCase - Integration Test', () =>
       });
 
       await createUserUseCase.execute(userPayload);
-      user = await userRepository.findOneBy('username', userPayload.username) as UserDomain;
+      user = await userRepository.findOneBy({ username: userPayload.username }) as UserDomain;
     }
     else
     {
@@ -112,7 +112,7 @@ describe('UpdateUserUseCase - Integration Test', () =>
         username: newUsername
       });
 
-      const updatedUser = await userRepository.findOneBy('id', user.id);
+      const updatedUser = await userRepository.findOneBy({ id: user.id });
       expect(updatedUser?.username).toBe(newUsername);
     });
 
@@ -125,7 +125,7 @@ describe('UpdateUserUseCase - Integration Test', () =>
         password: newPassword
       });
 
-      const updatedUser = await userRepository.findOneBy('id', user.id);
+      const updatedUser = await userRepository.findOneBy({ id: user.id });
       const isPasswordValid = await hashService.compare(newPassword, updatedUser?.password as string);
       expect(isPasswordValid).toBe(true);
     });
@@ -307,7 +307,7 @@ describe('UpdateUserUseCase - Integration Test', () =>
         }
       });
 
-      const updatedUser = await userRepository.findOneBy('id', user.id);
+      const updatedUser = await userRepository.findOneBy({  id: user.id });
       const isPasswordValid = await hashService.compare(newPassword, updatedUser?.password as string);
 
       expect(updatedUser?.username).toBe(newUsername);
