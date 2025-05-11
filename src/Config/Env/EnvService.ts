@@ -110,4 +110,9 @@ export class EnvService
       from: this.get('SMTP_FROM') as string
     };
   }
+
+  get frontEndUrl(): string
+  {
+    return this.get('FRONT_END_URL') as string;
+  }
 }

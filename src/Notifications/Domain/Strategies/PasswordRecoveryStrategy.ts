@@ -12,14 +12,12 @@ export class PasswordRecoveryStrategy implements NotificationStrategy<PasswordRe
 
   buildSubject(data: PasswordRecoveryPayload): string
   {
-    return `Password Recovery Request`;
+    return 'Password Recovery Request';
   }
 
   buildBody(data: PasswordRecoveryPayload): string
   {
-    const baseUrl = this.envService.isDevelopment
-      ? `http://localhost:${this.envService.port}`
-      : 'https://your-production-domain.com';
+    const baseUrl = `${this.envService.frontEndUrl}/auth/reset-password`;
 
     const resetUrl = `${baseUrl}/reset-password?token=${data.recoveryToken}`;
     const expiresAt = format(data.expiresAt, 'MMM dd, yyyy HH:mm');

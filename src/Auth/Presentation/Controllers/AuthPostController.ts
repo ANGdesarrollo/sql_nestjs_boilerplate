@@ -7,6 +7,7 @@ import { CreateTenantUseCase } from '../../Application/CreateTenantUseCase';
 import { CreateUserUseCase } from '../../Application/CreateUserUseCase';
 import { LoginUserUseCase } from '../../Application/LoginUserUseCase';
 import { RequestPasswordRecoveryUseCase } from '../../Application/RequestPasswordRecoveryUseCase';
+import { ResetPasswordUseCase } from '../../Application/ResetPasswordUseCase';
 import { CreateUserPayload } from '../../Domain/Payloads/CreateUserPayload';
 import { LoginUserPayload } from '../../Domain/Payloads/LoginUserPayload';
 import { TenantPayload } from '../../Domain/Payloads/TenantPayload';
@@ -21,7 +22,8 @@ export class AuthPostController
     private readonly loginUserUseCase: LoginUserUseCase,
     private readonly createTenantUseCase: CreateTenantUseCase,
     private readonly configService: EnvService,
-    private readonly requestPasswordRecoveryUseCase: RequestPasswordRecoveryUseCase
+    private readonly requestPasswordRecoveryUseCase: RequestPasswordRecoveryUseCase,
+    private readonly resetPasswordUseCase: ResetPasswordUseCase
   ) {}
 
   @Post('login')
@@ -64,5 +66,12 @@ export class AuthPostController
   async recoverPassword(@Body() body: { email: string })
   {
     await this.requestPasswordRecoveryUseCase.execute(body.email);
+  }
+
+  @Post('reset-password')
+  @HttpCode(200)
+  async resetPassword(@Body() body: { token: string, password: string })
+  {
+    await this.resetPasswordUseCase.execute(body);
   }
 }

@@ -21,20 +21,21 @@ void (async() =>
     }
   );
 
+  await app.register(multiPart);
 
   const envService = app.get(EnvService);
 
   app.setGlobalPrefix('api');
-
-  await app.register(multiPart);
-
 
   await app.register(fastifyCookie, {
     secret: envService.cookie.secret,
     hook: 'onRequest'
   });
 
+
+
   await app.listen(envService.port, '0.0.0.0');
+
 
   Logger.log(`Application is running on: ${await app.getUrl()}`);
 })();

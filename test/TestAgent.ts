@@ -1,5 +1,5 @@
-// Modified version of your TestAgent.ts
 import fastifyCookie from '@fastify/cookie';
+import multiPart from '@fastify/multipart';
 import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify';
 import { Test, TestingModule } from '@nestjs/testing';
 import { DataSource } from 'typeorm';
@@ -32,6 +32,9 @@ export const getTestAgent = async(suiteName?: string) =>
     secret: envService.cookie.secret,
     hook: 'onRequest'
   });
+
+  await app.register(multiPart);
+
 
   await app.init();
   await app.getHttpAdapter().getInstance().ready();
