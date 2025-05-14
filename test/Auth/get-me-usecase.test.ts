@@ -75,12 +75,10 @@ describe('GetMeUseCase - Integration Test', () =>
 
     tenantId = createdTenant.id;
 
-    // Create super user
     const superUserFixture = CreateSuperUserFixture();
     await createSuperUserUseCase.execute(superUserFixture);
     superUser = await userRepository.findOneBy({ username: superUserFixture.username }) as UserDomain;
 
-    // Create regular user
     const userPayload = CreateUserFixture({
       tenantIds: [tenantId],
       defaultTenantId: tenantId
@@ -96,22 +94,18 @@ describe('GetMeUseCase - Integration Test', () =>
     {
       const result = await getMeUseCase.execute(regularUser.id);
 
-      // Verify user info
       expect(result.user).toBeDefined();
       expect(result.user.id).toBe(regularUser.id);
       expect(result.user.username).toBe(regularUser.username);
       expect(result.user.createdAt).toBeInstanceOf(Date);
       expect(result.user.updatedAt).toBeInstanceOf(Date);
 
-      // Verify roles
       expect(result.roles).toBeInstanceOf(Array);
       expect(result.roles).toContain(Roles.USER);
 
-      // Verify permissions
       expect(result.permissions).toBeInstanceOf(Array);
       expect(result.permissions.length).toBeGreaterThan(0);
 
-      // Verify tenants
       expect(result.tenants).toBeInstanceOf(Array);
       expect(result.tenants.length).toBe(1);
       expect(result.tenants[0].id).toBe(tenantId);
@@ -158,7 +152,6 @@ describe('GetMeUseCase - Integration Test', () =>
 
     it('should return user with multiple tenants when user is assigned to multiple tenants', async() =>
     {
-      // Create a second tenant
       const tenantPayload2 = createTenantFixture();
       await createTenantUseCase.execute(tenantPayload2);
 
@@ -214,7 +207,6 @@ describe('GetMeUseCase - Integration Test', () =>
 
     it('should properly handle users with no roles', async() =>
     {
-      // Create a user directly in repository to bypass role assignment
       const username = faker.internet.email();
       const password = faker.internet.password();
       const userWithoutRoles = await userRepository.create({
@@ -222,25 +214,20 @@ describe('GetMeUseCase - Integration Test', () =>
         password
       });
 
-      // Assign tenant
       await userTenantRepository.create({
         userId: userWithoutRoles.id,
         tenantId,
         isDefault: true
       });
 
-      // Get user info
       const result = await getMeUseCase.execute(userWithoutRoles.id);
 
-      // Verify user info
       expect(result.user).toBeDefined();
       expect(result.user.id).toBe(userWithoutRoles.id);
 
-      // Verify roles is empty array
       expect(result.roles).toBeInstanceOf(Array);
       expect(result.roles.length).toBe(0);
 
-      // Verify permissions is empty array
       expect(result.permissions).toBeInstanceOf(Array);
       expect(result.permissions.length).toBe(0);
     });
@@ -249,19 +236,16 @@ describe('GetMeUseCase - Integration Test', () =>
     {
       const result = await getMeUseCase.execute(regularUser.id);
 
-      // Check that all expected fields are present in the result
       expect(result).toHaveProperty('user');
       expect(result).toHaveProperty('roles');
       expect(result).toHaveProperty('permissions');
       expect(result).toHaveProperty('tenants');
 
-      // Check user fields
       expect(result.user).toHaveProperty('id');
       expect(result.user).toHaveProperty('username');
       expect(result.user).toHaveProperty('createdAt');
       expect(result.user).toHaveProperty('updatedAt');
 
-      // Check tenants fields
       expect(result.tenants[0]).toHaveProperty('id');
       expect(result.tenants[0]).toHaveProperty('name');
       expect(result.tenants[0]).toHaveProperty('slug');

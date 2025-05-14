@@ -30,6 +30,11 @@ export class EnvService
     return this.get('PORT') as number;
   }
 
+  get baseUrl(): string
+  {
+    return this.get('BASE_URL') as string;
+  }
+
   get isDevelopment(): boolean
   {
     return this.nodeEnv === 'development';

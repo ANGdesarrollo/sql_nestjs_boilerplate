@@ -7,6 +7,7 @@ export const envConfig = {
     .default('development'),
   PORT: Joi.number().default(8000),
   FRONT_END_URL: Joi.string().default('http://localhost:5173'),
+  BASE_URL: Joi.string().default('http://localhost:8000'),
   DATABASE_SCHEMA: Joi.string().default('public'),
   DATABASE_HOST: Joi.string().default('localhost'),
   DATABASE_PORT: Joi.number().default(5432),

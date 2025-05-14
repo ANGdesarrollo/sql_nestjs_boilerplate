@@ -1,7 +1,43 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { DeepPartial, EntityManager, FindOneOptions, ObjectLiteral, Repository } from 'typeorm';
 
+import { EnvService } from '../../Config/Env/EnvService';
+import { BaseCriteria  } from '../Domain/Criteria/BaseCriteria';
+import { CriteriaResponse } from '../Domain/Criteria/CriteriaResponse';
 import { BaseRepository } from '../Domain/Repositories/BaseRepository';
+
+type QueryParamsCriteria = Pick<BaseCriteria, 'offset' | 'limit' | 'sortBy' | 'orderBy' | 'filters'>;
+
+function buildQueryParams(criteria: QueryParamsCriteria): string
+{
+  const params = new URLSearchParams();
+
+  // Agregar offset y limit
+  params.append('offset', criteria.offset.toString());
+  params.append('limit', criteria.limit.toString());
+
+  // Agregar sortBy y orderBy si existen
+  if (criteria.sortBy)
+  {
+    params.append('sortBy', criteria.sortBy);
+  }
+  if (criteria.orderBy)
+  {
+    params.append('orderBy', criteria.orderBy);
+  }
+
+  // Agregar filtros
+  Object.keys(criteria.filters).forEach((key) =>
+  {
+    criteria.filters[key].forEach((value) =>
+    {
+      params.append(key, value);
+    });
+  });
+
+  return params.toString();
+}
+
 
 @Injectable()
 export abstract class BaseTypeOrmRepositoryImpl<D, T extends ObjectLiteral> implements BaseRepository<D, T>
@@ -55,7 +91,7 @@ export abstract class BaseTypeOrmRepositoryImpl<D, T extends ObjectLiteral> impl
       {
         options.relations = relations;
       }
-      return await this.repository.findOne(options);
+      return this.repository.findOne(options);
     }
     catch (error)
     {
@@ -67,13 +103,100 @@ export abstract class BaseTypeOrmRepositoryImpl<D, T extends ObjectLiteral> impl
   {
     try
     {
-      return await this.repository.find();
+      return this.repository.find();
     }
     catch (error)
     {
       this.handleTypeOrmError(error, 'list');
     }
   }
+
+  async listByCriteria(
+    criteria: BaseCriteria,
+    relations?: string[]
+  ): Promise<CriteriaResponse<T>>
+  {
+    try
+    {
+      const baseUrl = process.env.BASE_URL;
+      const queryBuilder = this.repository.createQueryBuilder('entity');
+
+      // Aplicar filtros
+      Object.keys(criteria.filters).forEach((key) =>
+      {
+        if (criteria.filters[key].length > 0)
+        {
+          queryBuilder.andWhere(`entity.${key} IN (:...${key})`, {
+            [key]: criteria.filters[key]
+          });
+        }
+      });
+
+      // Aplicar ordenamiento
+      if (criteria.sortBy && criteria.orderBy)
+      {
+        queryBuilder.orderBy(
+          `entity.${criteria.sortBy}`,
+          criteria.orderBy.toUpperCase() as 'ASC' | 'DESC'
+        );
+      }
+
+      // Aplicar paginación
+      queryBuilder.skip(criteria.offset).take(criteria.limit);
+
+      // Incluir relaciones
+      if (relations && relations.length > 0)
+      {
+        relations.forEach((relation) =>
+        {
+          const alias = `${relation}Alias`;
+          queryBuilder.leftJoinAndSelect(`entity.${relation}`, alias);
+        });
+      }
+
+      // Obtener datos
+      const data = await queryBuilder.getMany();
+
+      // Calcular totalRecords con filtros
+      const countQuery = this.repository.createQueryBuilder('entity');
+      Object.keys(criteria.filters).forEach((key) =>
+      {
+        if (criteria.filters[key].length > 0)
+        {
+          countQuery.andWhere(`entity.${key} IN (:...${key})`, {
+            [key]: criteria.filters[key]
+          });
+        }
+      });
+      const totalRecords = await countQuery.getCount();
+      const totalPages = Math.ceil(totalRecords / criteria.limit);
+
+      const nextOffset =
+        criteria.offset + criteria.limit < totalRecords
+          ? criteria.offset + criteria.limit
+          : null;
+      const prevOffset = criteria.offset > 0 ? criteria.offset - criteria.limit : null;
+
+      const nextParams = nextOffset !== null ? buildQueryParams({ ...criteria, offset: nextOffset }) : null;
+      const prevParams = prevOffset !== null ? buildQueryParams({ ...criteria, offset: prevOffset }) : null;
+
+      const nextPage = nextParams ? `${baseUrl}?${nextParams}` : null;
+      const prevPage = prevParams ? `${baseUrl}?${prevParams}` : null;
+
+      return {
+        data,
+        totalPages,
+        nextPage,
+        prevPage
+      };
+    }
+    catch (error)
+    {
+      this.logger.error(`Error executing listByCriteria: ${error.message}`);
+      throw new Error(`Failed to list entities: ${error.message}`);
+    }
+  }
+
 
   async update(id: string, data: Partial<T>): Promise<T>
   {
@@ -132,3 +255,4 @@ export abstract class BaseTypeOrmRepositoryImpl<D, T extends ObjectLiteral> impl
     }
   }
 }
+
