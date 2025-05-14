@@ -1,7 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { DeepPartial, EntityManager, FindOneOptions, ObjectLiteral, Repository } from 'typeorm';
 
-import { EnvService } from '../../Config/Env/EnvService';
 import { BaseCriteria  } from '../Domain/Criteria/BaseCriteria';
 import { CriteriaResponse } from '../Domain/Criteria/CriteriaResponse';
 import { BaseRepository } from '../Domain/Repositories/BaseRepository';
@@ -12,11 +11,9 @@ function buildQueryParams(criteria: QueryParamsCriteria): string
 {
   const params = new URLSearchParams();
 
-  // Agregar offset y limit
   params.append('offset', criteria.offset.toString());
   params.append('limit', criteria.limit.toString());
 
-  // Agregar sortBy y orderBy si existen
   if (criteria.sortBy)
   {
     params.append('sortBy', criteria.sortBy);
@@ -141,10 +138,8 @@ export abstract class BaseTypeOrmRepositoryImpl<D, T extends ObjectLiteral> impl
         );
       }
 
-      // Aplicar paginación
       queryBuilder.skip(criteria.offset).take(criteria.limit);
 
-      // Incluir relaciones
       if (relations && relations.length > 0)
       {
         relations.forEach((relation) =>
@@ -154,10 +149,8 @@ export abstract class BaseTypeOrmRepositoryImpl<D, T extends ObjectLiteral> impl
         });
       }
 
-      // Obtener datos
       const data = await queryBuilder.getMany();
 
-      // Calcular totalRecords con filtros
       const countQuery = this.repository.createQueryBuilder('entity');
       Object.keys(criteria.filters).forEach((key) =>
       {
@@ -244,9 +237,7 @@ export abstract class BaseTypeOrmRepositoryImpl<D, T extends ObjectLiteral> impl
       const newRepository = manager.getRepository<T>(this.repository.target);
 
       const repoClass = this.constructor as any;
-      const newInstance = new repoClass(newRepository, this.entityName);
-
-      return newInstance;
+      return new repoClass(newRepository, this.entityName);
     }
     catch (error)
     {
