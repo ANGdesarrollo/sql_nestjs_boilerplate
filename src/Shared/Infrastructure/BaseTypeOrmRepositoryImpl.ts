@@ -23,7 +23,6 @@ function buildQueryParams(criteria: QueryParamsCriteria): string
     params.append('orderBy', criteria.orderBy);
   }
 
-  // Agregar filtros
   Object.keys(criteria.filters).forEach((key) =>
   {
     criteria.filters[key].forEach((value) =>
@@ -96,11 +95,13 @@ export abstract class BaseTypeOrmRepositoryImpl<D, T extends ObjectLiteral> impl
     }
   }
 
-  async list(): Promise<T[]>
+  async list(relations?: string[]): Promise<T[]>
   {
     try
     {
-      return this.repository.find();
+      return this.repository.find({
+        relations
+      });
     }
     catch (error)
     {
@@ -118,7 +119,6 @@ export abstract class BaseTypeOrmRepositoryImpl<D, T extends ObjectLiteral> impl
       const baseUrl = process.env.BASE_URL;
       const queryBuilder = this.repository.createQueryBuilder('entity');
 
-      // Aplicar filtros
       Object.keys(criteria.filters).forEach((key) =>
       {
         if (criteria.filters[key].length > 0)
@@ -129,7 +129,6 @@ export abstract class BaseTypeOrmRepositoryImpl<D, T extends ObjectLiteral> impl
         }
       });
 
-      // Aplicar ordenamiento
       if (criteria.sortBy && criteria.orderBy)
       {
         queryBuilder.orderBy(
@@ -189,7 +188,6 @@ export abstract class BaseTypeOrmRepositoryImpl<D, T extends ObjectLiteral> impl
       throw new Error(`Failed to list entities: ${error.message}`);
     }
   }
-
 
   async update(id: string, data: Partial<T>): Promise<T>
   {

@@ -4,6 +4,8 @@ import { CreateTenantUseCase } from './CreateTenantUseCase';
 import { CreateUserUseCase } from './CreateUserUseCase';
 import { GetMeUseCase } from './GetMeUseCase';
 import { GetUserUseCase } from './GetUserUseCase';
+import { ListRolesUseCase } from './ListRolesUseCase';
+import { ListTenantsUseCase } from './ListTenantsUseCase';
 import { ListUsersUseCase } from './ListUsersUseCase';
 import { LoginUserUseCase } from './LoginUserUseCase';
 import { RequestPasswordRecoveryUseCase } from './RequestPasswordRecoveryUseCase';
@@ -12,7 +14,6 @@ import { SwitchTenantUseCase } from './SwitchTenantUseCase';
 import { SyncRolesUseCase } from './SyncRolesUseCase';
 import { UpdateTenantUseCase } from './UpdateTenantUseCase';
 import { UpdateUserUseCase } from './UpdateUserUseCase';
-import { ListTenantsUseCase } from './ListTenantsUseCase';
 
 export const AuthUseCases = [
   LoginUserUseCase,
@@ -29,5 +30,6 @@ export const AuthUseCases = [
   RequestPasswordRecoveryUseCase,
   ResetPasswordUseCase,
   ListUsersUseCase,
-  ListTenantsUseCase
+  ListTenantsUseCase,
+  ListRolesUseCase
 ];

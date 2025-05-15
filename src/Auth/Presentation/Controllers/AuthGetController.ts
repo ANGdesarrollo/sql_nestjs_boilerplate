@@ -4,10 +4,10 @@ import { Permissions } from '../../../Config/Permissions';
 import { Criteria } from '../../../Shared/Presentation/Decorators/Criteria';
 import { GetMeUseCase } from '../../Application/GetMeUseCase';
 import { GetUserUseCase } from '../../Application/GetUserUseCase';
+import { ListRolesUseCase } from '../../Application/ListRolesUseCase';
 import { ListTenantsUseCase } from '../../Application/ListTenantsUseCase';
 import { ListUsersUseCase } from '../../Application/ListUsersUseCase';
 import { RequestWithUserPayload } from '../../Domain/Payloads/RequestWithUserPayload';
-import { UserRoleRepository } from '../../Infrastructure/Repositories/UserRoleRepository';
 import { TenantCriteria } from '../Criteria/TenantCriteria';
 import { UserCriteria } from '../Criteria/UserCriteria';
 import { RequirePermissions } from '../Decorators/RequirePermissions';
@@ -19,12 +19,13 @@ export class AuthGetController
   constructor(
     private readonly getUserUseCase: GetUserUseCase,
     private readonly getMeUseCase: GetMeUseCase,
-    private readonly repository: UserRoleRepository,
     private readonly listUsersUseCase: ListUsersUseCase,
-    private readonly listTenantsUseCase: ListTenantsUseCase
+    private readonly listTenantsUseCase: ListTenantsUseCase,
+    private readonly listRolesUseCase: ListRolesUseCase
   ) {}
 
   @Get('users')
+  @UseGuards(AuthGuard)
   @RequirePermissions(Permissions.USER.LIST)
   async listUsers(@Criteria(UserCriteria) criteria: UserCriteria)
   {
@@ -32,6 +33,7 @@ export class AuthGetController
   }
 
   @Get('users/:userId')
+  @UseGuards(AuthGuard)
   @RequirePermissions(Permissions.USER.READ)
   async getUser(@Param('userId') userId: string)
   {
@@ -39,6 +41,7 @@ export class AuthGetController
   }
 
   @Get('tenants')
+  @UseGuards(AuthGuard)
   @RequirePermissions(Permissions.TENANT.LIST)
   async listTenants(@Criteria(TenantCriteria) criteria: TenantCriteria)
   {
@@ -52,10 +55,11 @@ export class AuthGetController
     return this.getMeUseCase.execute(request.user.userId);
   }
 
-  @Get('test')
+  @Get('roles')
   @UseGuards(AuthGuard)
-  async test(@Req() request: RequestWithUserPayload)
+  @RequirePermissions(Permissions.ROLE.LIST)
+  async listRoles()
   {
-    return this.repository.getUserRoles(request.user.userId);
+    return this.listRolesUseCase.execute();
   }
 }
