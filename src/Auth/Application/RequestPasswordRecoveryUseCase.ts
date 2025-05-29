@@ -4,7 +4,7 @@ import { addHours } from 'date-fns';
 import { v4 as uuidv4 } from 'uuid';
 
 import { PasswordRecoveryEvent } from '../../Shared/Events/Auth/PasswordRecovery/PasswordRecoveryEvent';
-import { Logger } from '../../Shared/Presentation/Utils/Logger';
+import { Event } from '../../Shared/Events/Event';
 import { PasswordRecoveryTokenRepository } from '../Infrastructure/Repositories/PasswordRecoveryTokenRepository';
 import { UserRepository } from '../Infrastructure/Repositories/UserRepository';
 
@@ -39,7 +39,7 @@ export class RequestPasswordRecoveryUseCase
     });
 
     this.eventEmitter.emit(
-      'auth.password.recovery.requested',
+      Event.AUTH_PASSWORD_RECOVERY_REQUESTED,
       new PasswordRecoveryEvent(user.username, token, expiresAt)
     );
   }

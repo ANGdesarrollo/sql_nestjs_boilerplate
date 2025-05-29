@@ -23,6 +23,7 @@ export class SwitchTenantUseCase extends Validator<SwitchTenantPayload>
     const { userId, tenantId } =  this.validate(payload);
 
     const userTenant = await this.userTenantRepository.findByUserAndTenant(userId, tenantId);
+    
     if (!userTenant)
     {
       throw new ForbiddenException('User does not have access to the requested tenant');

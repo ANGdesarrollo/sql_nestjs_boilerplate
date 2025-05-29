@@ -22,7 +22,6 @@ jest.setTimeout(30000);
 
 // Your custom matchers...
 
-// Setup function to get current test file name
 function getCurrentTestFile()
 {
   const testPath = expect.getState().testPath;
@@ -43,7 +42,6 @@ beforeAll(async() =>
   schemaName = testEnv.schemaName;
 });
 
-// Drop schema after tests complete
 afterAll(async() =>
 {
   if (dataSource && dataSource.isInitialized)
@@ -58,7 +56,6 @@ afterAll(async() =>
   }
 });
 
-// Clear tables between tests
 afterEach(async() =>
 {
   if (dataSource && dataSource.isInitialized)
