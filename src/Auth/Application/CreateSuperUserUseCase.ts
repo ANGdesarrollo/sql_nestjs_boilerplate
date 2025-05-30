@@ -39,7 +39,8 @@ export class CreateSuperUserUseCase
       tenantSlug: config?.tenantSlug || 'system'
     };
 
-    return this.dataSource.transaction(async(manager) =>
+
+    await this.dataSource.transaction(async(manager) =>
     {
       const userRepo = this.userRepository.withTransaction(manager);
       const tenantRepo = this.tenantRepository.withTransaction(manager);
@@ -63,8 +64,8 @@ export class CreateSuperUserUseCase
       const existingUser = await userRepo.findOneBy({ username : superUserConfig.username });
       if (existingUser)
       {
-        Logger.log(`Super user '${superUserConfig.username}' already exists`);
-        return;
+        console.log(`Super user '${superUserConfig.username}' already exists`);
+        throw new BadRequestException('Super user already exists');
       }
 
       const hashedPassword = await this.hashService.hash(superUserConfig.password);
@@ -83,17 +84,14 @@ export class CreateSuperUserUseCase
         user: { id: user.id },
         role: { id: superAdminRole.id }
       });
-
-      if (!config?.password)
-      {
-        Logger.log('======================================================');
-        Logger.log('Super User Created with the following credentials:');
-        Logger.log(`Username: ${superUserConfig.username}`);
-        Logger.log(`Password: ${superUserConfig.password}`);
-        Logger.log('======================================================');
-        Logger.log('Please change this password after your first login');
-      }
     });
+
+
+    console.log('======================================================');
+    console.log('Super User Created with the following credentials:');
+    console.log(`Username: ${superUserConfig.username}`);
+    console.log(`Password: ${superUserConfig.password}`);
+    console.log('======================================================');
   }
 
   private _generateRandomPassword(length = 12): string
