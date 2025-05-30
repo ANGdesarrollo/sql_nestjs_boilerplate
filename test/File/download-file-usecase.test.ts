@@ -1,3 +1,4 @@
+import { faker } from '@faker-js/faker';
 import { NotFoundException } from '@nestjs/common';
 import { NestFastifyApplication } from '@nestjs/platform-fastify';
 import { Repository } from 'typeorm';
@@ -46,7 +47,10 @@ describe('DownloadFileUseCase - Integration Test', () =>
         size: 1024,
         bucketName: 'test-bucket',
         path: 'test-path/test-file.txt',
-        tenantId: 'test-tenant',
+        tenantId: faker.number.int({
+          min: 100,
+          max: 200
+        }),
         isPublic: false
       });
 
@@ -67,7 +71,11 @@ describe('DownloadFileUseCase - Integration Test', () =>
 
     it('should throw NotFoundException when the file does not exist', async() =>
     {
-      const nonExistentFileId = uuidv4();
+      const nonExistentFileId = faker.number.int({
+        min: 10000,
+        max: 20000
+      });
+
       const payload: DownloadFilePayload = { fileId: nonExistentFileId };
 
       const file = await fileRepository.findOneBy({ id: nonExistentFileId });

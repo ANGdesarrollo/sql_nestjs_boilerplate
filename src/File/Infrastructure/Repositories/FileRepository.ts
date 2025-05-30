@@ -30,7 +30,7 @@ export class FileRepository extends BaseTypeOrmRepositoryImpl<FilePayload, FileD
     }
   }
 
-  async findByTenantId(tenantId: string): Promise<FileDomain[]>
+  async findByTenantId(tenantId: number): Promise<FileDomain[]>
   {
     try
     {

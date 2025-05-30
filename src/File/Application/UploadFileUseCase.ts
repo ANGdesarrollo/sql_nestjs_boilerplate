@@ -24,10 +24,8 @@ export class UploadFileUseCase
       payload.isPublic
     );
 
-    // Calculate the actual bucket name used
     const bucketName = this.minioService.getBucketName(payload.isPublic);
 
-    // Save file metadata to database
     const fileMetadata = {
       originalName: payload.originalName,
       mimeType: payload.mimeType,

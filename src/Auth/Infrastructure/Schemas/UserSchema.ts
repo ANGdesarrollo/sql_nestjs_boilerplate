@@ -7,8 +7,8 @@ import { UserTenantEntity } from './UserTenantSchema';
 @Entity('users')
 export class UserEntity
 {
-  @PrimaryGeneratedColumn('uuid')
-    id: string;
+  @PrimaryGeneratedColumn('increment')
+    id: number;
 
   @Column({ unique: true })
     username: string;

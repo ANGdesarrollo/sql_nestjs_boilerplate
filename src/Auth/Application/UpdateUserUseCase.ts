@@ -101,11 +101,11 @@ export class UpdateUserUseCase extends Validator<UpdateUserPayload>
 
   private async _validateTenantChanges(
     tenantChanges: {
-      addTenantIds?: string[];
-      removeTenantIds?: string[];
-      defaultTenantId?: string;
+      addTenantIds?: number[];
+      removeTenantIds?: number[];
+      defaultTenantId?: number;
     },
-    userId: string
+    userId: number
   ): Promise<void>
   {
     const { addTenantIds, removeTenantIds, defaultTenantId } = tenantChanges;
@@ -167,17 +167,16 @@ export class UpdateUserUseCase extends Validator<UpdateUserPayload>
 
   private async _processTenantChanges(
     userTenantRepo: UserTenantRepository,
-    userId: string,
+    userId: number,
     tenantChanges: {
-      addTenantIds?: string[];
-      removeTenantIds?: string[];
-      defaultTenantId?: string;
+      addTenantIds?: number[];
+      removeTenantIds?: number[];
+      defaultTenantId?: number;
     }
   ): Promise<void>
   {
     const { addTenantIds, removeTenantIds, defaultTenantId } = tenantChanges;
 
-    // Add tenant relationships
     if (addTenantIds && addTenantIds.length > 0)
     {
       await userTenantRepo.createMany(

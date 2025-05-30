@@ -16,7 +16,7 @@ export class UserRoleRepository extends BaseTypeOrmRepositoryImpl<CreateUserRole
     super(userRoleRepository, 'UserRoleEntity');
   }
 
-  async getUserRoles(userId: string): Promise<UserRoleDomain[]>
+  async getUserRoles(userId: number): Promise<UserRoleDomain[]>
   {
     try
     {

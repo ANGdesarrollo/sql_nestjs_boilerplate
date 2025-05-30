@@ -20,7 +20,7 @@ export class GetMeUseCase
     private readonly userPermissionRepository: UserPermissionRepository
   ) {}
 
-  async execute(userId: string): Promise<{
+  async execute(userId: number): Promise<{
     user: UserInfo;
     roles: string[];
     permissions: string[];

@@ -1,4 +1,4 @@
 export interface JwtPayload {
-  userId: string;
-  tenantId: string;
+  userId: number;
+  tenantId: number;
 }

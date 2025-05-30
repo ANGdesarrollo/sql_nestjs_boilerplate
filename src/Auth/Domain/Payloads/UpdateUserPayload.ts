@@ -1,10 +1,10 @@
 export interface UpdateUserPayload {
-  id: string;
+  id: number;
   username?: string;
   password?: string;
   tenantChanges?: {
-    addTenantIds?: string[];
-    removeTenantIds?: string[];
-    defaultTenantId?: string;
+    addTenantIds?: number[];
+    removeTenantIds?: number[];
+    defaultTenantId?: number;
   };
 }

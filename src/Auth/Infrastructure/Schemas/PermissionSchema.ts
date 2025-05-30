@@ -5,8 +5,8 @@ import { RoleEntity } from './RoleSchema';
 @Entity('permissions')
 export class PermissionEntity
 {
-  @PrimaryGeneratedColumn('uuid')
-    id: string;
+  @PrimaryGeneratedColumn('increment')
+    id: number;
 
   @Column({ unique: true })
     name: string;

@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 export const UpdateUserPayloadSchema = z.object({
-  id: z.string().uuid({ message: 'User ID must be a valid UUID' }),
+  id: z.number({ message: 'User ID must be a valid id' }),
   username: z.string()
     .min(3, { message: 'Username must be at least 3 characters long' })
     .optional(),
@@ -9,20 +9,16 @@ export const UpdateUserPayloadSchema = z.object({
     .min(6, { message: 'Password must be at least 6 characters long' })
     .optional(),
   tenantChanges: z.object({
-    addTenantIds: z.array(z.string().uuid({ message: 'Tenant ID must be a valid UUID' }))
+    addTenantIds: z.array(z.number({ message: 'Tenant ID must be a valid id' }))
       .optional(),
-    removeTenantIds: z.array(z.string().uuid({ message: 'Tenant ID must be a valid UUID' }))
+    removeTenantIds: z.array(z.number({ message: 'Tenant ID must be a valid id' }))
       .optional(),
-    defaultTenantId: z.string().uuid({ message: 'Default tenant ID must be a valid UUID' })
+    defaultTenantId: z.number({ message: 'Default tenant ID must be a valid id' })
       .optional()
   }).optional()
 }).refine(data =>
 {
-  if (!data.username && !data.password && !data.tenantChanges)
-  {
-    return false;
-  }
-  return true;
+  return !(!data.username && !data.password && !data.tenantChanges);
 }, {
   message: 'At least one field must be provided for update',
   path: []

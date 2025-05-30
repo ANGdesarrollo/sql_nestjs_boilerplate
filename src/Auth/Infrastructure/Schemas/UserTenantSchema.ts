@@ -1,10 +1,10 @@
 import {
   Entity,
-  ManyToOne,
-  JoinColumn,
-  CreateDateColumn,
   Column,
-  PrimaryColumn
+  PrimaryColumn,
+  CreateDateColumn,
+  ManyToOne,
+  JoinColumn
 } from 'typeorm';
 
 import { TenantEntity } from './TenantSchema';
@@ -13,11 +13,11 @@ import { UserEntity } from './UserSchema';
 @Entity('user_tenants')
 export class UserTenantEntity
 {
-  @PrimaryColumn('uuid', { name: 'user_id' })
-    userId: string;
+  @PrimaryColumn({ name: 'user_id', type: 'int' })
+    userId: number;
 
-  @PrimaryColumn('uuid', { name: 'tenant_id' })
-    tenantId: string;
+  @PrimaryColumn({ name: 'tenant_id', type: 'int' })
+    tenantId: number;
 
   @ManyToOne(() => UserEntity, { onDelete: 'CASCADE', nullable: false })
   @JoinColumn({ name: 'user_id' })

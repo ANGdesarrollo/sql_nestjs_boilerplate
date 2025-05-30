@@ -52,7 +52,6 @@ describe('AssignUserToTenantUseCase - Integration Test', () =>
 
   beforeEach(async() =>
   {
-    // Create super user
     const superUser = CreateSuperUserFixture();
     await createSuperUserUseCase.execute(superUser);
 
@@ -73,9 +72,6 @@ describe('AssignUserToTenantUseCase - Integration Test', () =>
 
     if (!matchedTenant1 || !matchedTenant2)
     {
-      console.error('Tenants not found in the database!');
-      console.log('Tenant names in fixtures:', tenantPayload1.name, tenantPayload2.name);
-      console.log('Tenants in database:', tenants.map(t => `${t.name} (${t.slug})`));
       throw new Error('Test setup failed: tenants not found');
     }
 
@@ -137,7 +133,10 @@ describe('AssignUserToTenantUseCase - Integration Test', () =>
 
     it('should throw NotFoundException when user does not exist', async() =>
     {
-      const nonExistentUserId = faker.string.uuid();
+      const nonExistentUserId = faker.number.int({
+        min: 10000,
+        max: 20000
+      });
 
       await expect(assignUserToTenantUseCase.execute({
         userId: nonExistentUserId,
@@ -161,7 +160,10 @@ describe('AssignUserToTenantUseCase - Integration Test', () =>
 
     it('should throw NotFoundException when tenant does not exist', async() =>
     {
-      const nonExistentTenantId = faker.string.uuid();
+      const nonExistentTenantId = faker.number.int({
+        min: 10000,
+        max: 20000
+      });
 
       await expect(assignUserToTenantUseCase.execute({
         userId: user.id,

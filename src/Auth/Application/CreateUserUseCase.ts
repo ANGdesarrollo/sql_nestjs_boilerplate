@@ -87,9 +87,9 @@ export class CreateUserUseCase extends Validator<CreateUserPayload>
 
   private async _assignTenantsInTransaction(
     userTenantRepo: UserTenantRepository,
-    userId: string,
-    tenantIds: string[],
-    defaultTenantId: string
+    userId: number,
+    tenantIds: number[],
+    defaultTenantId: number
   ): Promise<void>
   {
     await userTenantRepo.createMany(
@@ -128,7 +128,7 @@ export class CreateUserUseCase extends Validator<CreateUserPayload>
     }
   }
 
-  private async _findAndValidateTenants(tenantIds: string[]): Promise<TenantDomain[]>
+  private async _findAndValidateTenants(tenantIds: number[]): Promise<TenantDomain[]>
   {
     const tenants = await this.tenantRepository.findByIds(tenantIds);
 

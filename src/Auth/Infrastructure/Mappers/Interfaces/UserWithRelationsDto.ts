@@ -3,7 +3,7 @@ import { UserRoleEntity } from '../../Schemas/UserRoleSchema';
 import { UserTenantEntity } from '../../Schemas/UserTenantSchema';
 
 export interface UserWithRelationsDto {
-  id: string;
+  id: number;
   username: string;
   password: string;
   createdAt: Date;

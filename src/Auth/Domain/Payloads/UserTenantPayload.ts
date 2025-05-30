@@ -1,5 +1,5 @@
 export interface UserTenantPayload {
-  userId: string;
-  tenantId: string;
+  userId: number;
+  tenantId: number;
   isDefault?: boolean;
 }

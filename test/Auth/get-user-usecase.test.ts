@@ -64,7 +64,10 @@ describe('GetUserUseCase - Integration Test', () =>
     it('should throw NotFoundException when user does not exist', async() =>
     {
       // Arrange
-      const nonExistentId = faker.string.uuid();
+      const nonExistentId = faker.number.int({
+        min: 10000,
+        max: 20000
+      })
 
       // Act & Assert
       await expect(getUserUseCase.execute(nonExistentId))

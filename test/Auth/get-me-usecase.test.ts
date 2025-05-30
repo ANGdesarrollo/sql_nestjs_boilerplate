@@ -37,7 +37,7 @@ describe('GetMeUseCase - Integration Test', () =>
 
   let regularUser: UserDomain;
   let superUser: UserDomain;
-  let tenantId: string;
+  let tenantId: number;
 
   beforeAll(async() =>
   {
@@ -133,7 +133,10 @@ describe('GetMeUseCase - Integration Test', () =>
 
     it('should throw NotFoundException when user does not exist', async() =>
     {
-      const nonExistentUserId = faker.string.uuid();
+      const nonExistentUserId = faker.number.int({
+        min: 10000,
+        max: 20000
+      });
 
       await expect(getMeUseCase.execute(nonExistentUserId))
         .rejects.toThrow(NotFoundException);

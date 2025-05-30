@@ -76,13 +76,6 @@ describe('UpdateUserUseCase - Integration Test', () =>
     const matchedTenant1 = tenants.find(t => t.name === tenantPayload1.name);
     const matchedTenant2 = tenants.find(t => t.name === tenantPayload2.name);
 
-    if (!matchedTenant1 || !matchedTenant2)
-    {
-      console.error('Tenants not found in the database!');
-      console.log('Tenant names in fixtures:', tenantPayload1.name, tenantPayload2.name);
-      console.log('Tenants in database:', tenants.map(t => `${t.name} (${t.slug})`));
-    }
-
     tenant1 = matchedTenant1 as TenantDomain;
     tenant2 = matchedTenant2 as TenantDomain;
 
@@ -218,7 +211,10 @@ describe('UpdateUserUseCase - Integration Test', () =>
 
     it('should throw NotFoundException when user does not exist', async() =>
     {
-      const nonExistentId = faker.string.uuid();
+      const nonExistentId = faker.number.int({
+        min: 10000,
+        max: 20000
+      });
 
       await expect(updateUserUseCase.execute({
         id: nonExistentId,
@@ -245,7 +241,10 @@ describe('UpdateUserUseCase - Integration Test', () =>
 
     it('should throw BadRequestException when trying to add non-existent tenant', async() =>
     {
-      const nonExistentId = faker.string.uuid();
+      const nonExistentId = faker.number.int({
+        min: 10000,
+        max: 20000
+      });
 
       await expect(updateUserUseCase.execute({
         id: user.id,

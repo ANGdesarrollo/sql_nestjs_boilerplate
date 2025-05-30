@@ -1,4 +1,4 @@
 export interface SwitchTenantPayload {
-  userId: string;
-  tenantId: string;
+  userId: number;
+  tenantId: number;
 }

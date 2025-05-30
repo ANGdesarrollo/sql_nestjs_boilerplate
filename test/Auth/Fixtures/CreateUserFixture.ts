@@ -2,7 +2,7 @@ import { faker } from '@faker-js/faker';
 
 import { CreateUserPayload } from '../../../src/Auth/Domain/Payloads/CreateUserPayload';
 
-export const CreateUserFixture = (payload: {  tenantIds: string[], defaultTenantId: string }): CreateUserPayload =>
+export const CreateUserFixture = (payload: {  tenantIds: number[], defaultTenantId: number }): CreateUserPayload =>
 {
   return {
     username: faker.internet.email(),

@@ -1,12 +1,20 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, ManyToMany, JoinTable } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
+  ManyToMany,
+  JoinTable
+} from 'typeorm';
 
 import { PermissionEntity } from './PermissionSchema';
 
 @Entity('roles')
 export class RoleEntity
 {
-  @PrimaryGeneratedColumn('uuid')
-    id: string;
+  @PrimaryGeneratedColumn('increment')
+    id: number;
 
   @Column({ unique: true })
     name: string;

@@ -3,8 +3,8 @@ import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateCol
 @Entity('files')
 export class FileEntity
 {
-  @PrimaryGeneratedColumn('uuid')
-    id: string;
+  @PrimaryGeneratedColumn('increment')
+    id: number;
 
   @Column({ name: 'original_name' })
     originalName: string;
@@ -22,7 +22,7 @@ export class FileEntity
     path: string;
 
   @Column({ name: 'tenant_id', nullable: true })
-    tenantId: string;
+    tenantId: number;
 
   @Column({ name: 'is_public', default: false })
     isPublic: boolean;

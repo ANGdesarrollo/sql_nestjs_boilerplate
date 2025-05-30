@@ -53,9 +53,6 @@ describe('UpdateTenantUseCase - Integration Test', () =>
 
     if (!existingTenant)
     {
-      console.error('Tenant not found! Names don\'t match.');
-      console.log('Tenant name in fixture:', tenantPayload.name);
-      console.log('Tenants in database:', tenants.map(t => `${t.name} (${t.slug})`));
       throw new Error('Test tenant not found in database');
     }
   });
@@ -81,7 +78,11 @@ describe('UpdateTenantUseCase - Integration Test', () =>
 
     it('should throw NotFoundException when tenant does not exist', async() =>
     {
-      const nonExistentId = faker.string.uuid();
+      const nonExistentId = faker.number.int({
+        min: 10000,
+        max: 20000
+      });
+
       const updateData: UpdateTenantPayload = {
         id: nonExistentId,
         name: faker.company.name()

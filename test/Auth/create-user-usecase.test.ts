@@ -29,7 +29,7 @@ describe('CreateUserUseCase - Integration Test', () =>
   let userRoleRepository: UserRoleRepository;
   let roleRepository: RoleRepository;
   let superUser: SuperUserFixture;
-  let tenantId: string;
+  let tenantId: number;
   let dataSource: DataSource;
   let hashService: HashService;
 
@@ -58,7 +58,7 @@ describe('CreateUserUseCase - Integration Test', () =>
     await createSuperUserUseCase.execute(superUser);
 
     const tenant = await tenantRepository.findBySlug(superUser.tenantSlug);
-    tenantId = tenant?.id as string;
+    tenantId = tenant?.id as number;
   });
 
   describe('execute', () =>
@@ -76,13 +76,13 @@ describe('CreateUserUseCase - Integration Test', () =>
       expect(user).toBeDefined();
       expect(user?.username).toBe(payload.username);
 
-      const userTenants = await userTenantRepository.findUserTenants(user?.id as string);
+      const userTenants = await userTenantRepository.findUserTenants(user?.id as number);
       expect(userTenants).toHaveLength(1);
       expect(userTenants[0].tenant.id).toBe(tenantId);
       expect(userTenants[0].isDefault).toBe(true);
 
       const defaultRole = await roleRepository.findOneBy({ name : Roles.USER });
-      const userRoles = await userRoleRepository.getUserRoles(user?.id as string);
+      const userRoles = await userRoleRepository.getUserRoles(user?.id as number);
       expect(userRoles).toHaveLength(1);
       expect(userRoles[0].role.id).toBe(defaultRole?.id);
     });
@@ -102,7 +102,11 @@ describe('CreateUserUseCase - Integration Test', () =>
 
     it('should throw BadRequestException when tenant does not exist', async() =>
     {
-      const nonExistentTenantId = faker.string.uuid();
+      const nonExistentTenantId = faker.number.int({
+        min: 10000,
+        max: 20000
+      });
+
       const payload = CreateUserFixture({
         tenantIds: [nonExistentTenantId],
         defaultTenantId: nonExistentTenantId
@@ -116,7 +120,10 @@ describe('CreateUserUseCase - Integration Test', () =>
     {
       const payload = CreateUserFixture({
         tenantIds: [tenantId],
-        defaultTenantId: faker.string.uuid()
+        defaultTenantId: faker.number.int({
+          min: 10000,
+          max: 20000
+        })
       });
 
       await expect(createUserUseCase.execute(payload))
@@ -140,7 +147,7 @@ describe('CreateUserUseCase - Integration Test', () =>
       await createUserUseCase.execute(payload);
 
       const user = await userRepository.findOneBy({ username: payload.username });
-      const userTenants = await userTenantRepository.findUserTenants(user?.id as string);
+      const userTenants = await userTenantRepository.findUserTenants(user?.id as number);
 
       expect(userTenants).toHaveLength(2);
 
@@ -232,7 +239,10 @@ describe('CreateUserUseCase - Integration Test', () =>
 
     it('should throw BadRequestException when some tenantIds do not exist in the database', async() =>
     {
-      const fakeTenantId = faker.string.uuid();
+      const fakeTenantId = faker.number.int({
+        min: 10000,
+        max: 20000
+      });
 
       const payload = CreateUserFixture({
         tenantIds: [tenantId, fakeTenantId],

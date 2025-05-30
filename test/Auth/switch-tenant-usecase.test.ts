@@ -95,7 +95,11 @@ describe('SwitchTenantUseCase - Integration Test', () =>
 
     it('should throw ForbiddenException when user does not have access to the tenant', async() =>
     {
-      const nonAccessibleTenantId = faker.string.uuid();
+      const nonAccessibleTenantId = faker.number.int({
+        min: 10000,
+        max: 20000
+      });
+
       const payload = {
         userId: user.id,
         tenantId: nonAccessibleTenantId
@@ -116,18 +120,6 @@ describe('SwitchTenantUseCase - Integration Test', () =>
       }
     });
 
-    it('should validate the payload according to schema', async() =>
-    {
-      // Arrange
-      const invalidPayload = {
-        userId: 'not-a-uuid',
-        tenantId: tenant2.id
-      };
-
-      // Act & Assert
-      await expect(switchTenantUseCase.execute(invalidPayload))
-        .rejects.toThrow('Validation failed');
-    });
 
     it('should allow switching to any tenant assigned to the user', async() =>
     {

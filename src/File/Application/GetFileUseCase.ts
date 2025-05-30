@@ -17,7 +17,7 @@ export class GetFileUseCase
     private readonly minioService: MinioService
   ) {}
 
-  async execute(fileId: string): Promise<FileWithUrl>
+  async execute(fileId: number): Promise<FileWithUrl>
   {
     const file = await this.fileRepository.findOneBy({ id: fileId });
 

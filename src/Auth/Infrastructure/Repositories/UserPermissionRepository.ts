@@ -16,7 +16,7 @@ export class UserPermissionRepository extends BaseTypeOrmRepositoryImpl<UserPerm
     super(userPermissionRepository, 'UserPermissionEntity');
   }
 
-  async getUserPermissions(userId: string): Promise<UserPermissionDomain[]>
+  async getUserPermissions(userId: number): Promise<UserPermissionDomain[]>
   {
     try
     {

@@ -1,4 +1,11 @@
-import { Entity, ManyToOne, JoinColumn, CreateDateColumn, PrimaryColumn } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryColumn,
+  CreateDateColumn,
+  ManyToOne,
+  JoinColumn
+} from 'typeorm';
 
 import { RoleEntity } from './RoleSchema';
 import { UserEntity } from './UserSchema';
@@ -6,17 +13,17 @@ import { UserEntity } from './UserSchema';
 @Entity('user_roles')
 export class UserRoleEntity
 {
-  @PrimaryColumn({ name: 'user_id' })
-    userId: string;
+  @PrimaryColumn({ name: 'user_id', type: 'int' })
+    userId: number;
 
-  @PrimaryColumn({ name: 'role_id' })
-    roleId: string;
+  @PrimaryColumn({ name: 'role_id', type: 'int' })
+    roleId: number;
 
-  @ManyToOne(() => UserEntity, { onDelete: 'CASCADE' })
+  @ManyToOne(() => UserEntity, { onDelete: 'CASCADE', nullable: false })
   @JoinColumn({ name: 'user_id' })
     user: UserEntity;
 
-  @ManyToOne(() => RoleEntity, { onDelete: 'CASCADE' })
+  @ManyToOne(() => RoleEntity, { onDelete: 'CASCADE', nullable: false })
   @JoinColumn({ name: 'role_id' })
     role: RoleEntity;
 

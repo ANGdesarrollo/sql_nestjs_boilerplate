@@ -6,6 +6,7 @@ import { GetFileUseCase } from '../../src/File/Application/GetFileUseCase';
 import { MinioService } from '../../src/File/Domain/Services/MinioService';
 import { FileRepository } from '../../src/File/Infrastructure/Repositories/FileRepository';
 import { Logger } from '../../src/Shared/Presentation/Utils/Logger';
+import { faker } from '@faker-js/faker';
 
 describe('GetFileUseCase - Integration Test', () =>
 {
@@ -42,7 +43,10 @@ describe('GetFileUseCase - Integration Test', () =>
         size: 1024,
         bucketName: 'test-bucket',
         path: 'storage-path/test-file.txt',
-        tenantId: 'test-tenant',
+        tenantId: faker.number.int({
+          min: 100,
+          max: 200
+        }),
         isPublic: false
       });
 
@@ -57,7 +61,10 @@ describe('GetFileUseCase - Integration Test', () =>
 
     it('should throw NotFoundException when the file does not exist', async() =>
     {
-      const nonExistentId = uuidv4();
+      const nonExistentId = faker.number.int({
+        min: 10000,
+        max: 20000
+      });
 
       await expect(getFileUseCase.execute(nonExistentId)).rejects.toThrow(
         new NotFoundException(`File with ID ${nonExistentId} not found`)
@@ -75,7 +82,10 @@ describe('GetFileUseCase - Integration Test', () =>
         size: 1024,
         bucketName: 'test-bucket',
         path: 'storage-path/test-file.txt',
-        tenantId: 'test-tenant',
+        tenantId: faker.number.int({
+          min: 100,
+          max: 200
+        }),
         isPublic: false
       });
 

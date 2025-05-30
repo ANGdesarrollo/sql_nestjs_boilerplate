@@ -6,8 +6,8 @@ import { UserRepository } from '../Infrastructure/Repositories/UserRepository';
 import { UserTenantRepository } from '../Infrastructure/Repositories/UserTenantRepository';
 
 interface AssignUserToTenantParams {
-  userId: string;
-  tenantId: string;
+  userId: number;
+  tenantId: number;
   setAsDefault?: boolean;
 }
 

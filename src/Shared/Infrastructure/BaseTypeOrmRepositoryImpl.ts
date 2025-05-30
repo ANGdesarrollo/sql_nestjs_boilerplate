@@ -189,7 +189,7 @@ export abstract class BaseTypeOrmRepositoryImpl<D, T extends ObjectLiteral> impl
     }
   }
 
-  async update(id: string, data: Partial<T>): Promise<T>
+  async update(id: number, data: Partial<T>): Promise<T>
   {
     const result = await this.repository
       .createQueryBuilder()
@@ -208,7 +208,7 @@ export abstract class BaseTypeOrmRepositoryImpl<D, T extends ObjectLiteral> impl
   }
 
 
-  async delete(id: string): Promise<void>
+  async delete(id: number): Promise<void>
   {
     try
     {

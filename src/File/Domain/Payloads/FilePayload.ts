@@ -4,7 +4,7 @@ export interface FilePayload {
   size: number;
   bucketName: string;
   path: string;
-  tenantId?: string;
+  tenantId?: number;
   isPublic: boolean;
 }
 
@@ -14,10 +14,10 @@ export interface UploadFilePayload {
   mimeType: string;
   bucketName: string;
   path?: string;
-  tenantId?: string;
+  tenantId?: number;
   isPublic: boolean;
 }
 
 export interface DownloadFilePayload {
-  fileId: string;
+  fileId: number;
 }

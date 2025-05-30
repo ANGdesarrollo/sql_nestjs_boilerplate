@@ -55,7 +55,7 @@ describe('listTenantsUseCase', () =>
 
   it('use case should be defined', () =>
   {
-    expect(ListTenantsUseCase).toBeDefined();
+    expect(listTenantsUseCase).toBeDefined();
   });
 
   it('should return all tenants', async() =>
@@ -125,8 +125,6 @@ describe('listTenantsUseCase', () =>
       expect(resultASC.data).toBeInstanceOf(Array);
       expect(resultASC.nextPage).toBeDefined();
       expect(resultASC.prevPage).toBeDefined();
-
-      console.log(resultASC);
 
       for (let i = 0; i < result.data.length - 1; i++)
       {

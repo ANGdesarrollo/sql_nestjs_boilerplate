@@ -7,9 +7,9 @@ import { EnvService } from '../Config/Env/EnvService';
 import { AuthUseCases } from './Application';
 import { HashService } from './Domain/Services/HashService';
 import { AuthRepositories } from './Infrastructure/Repositories';
-import { PasswordRecoveryTokenRepository } from './Infrastructure/Repositories/PasswordRecoveryTokenRepository';
 import { UserPermissionRepository } from './Infrastructure/Repositories/UserPermissionRepository';
 import { UserRoleRepository } from './Infrastructure/Repositories/UserRoleRepository';
+import { PasswordRecoveryTokenEntity } from './Infrastructure/Schemas/PasswordRecoveryTokenSchema';
 import { PermissionEntity } from './Infrastructure/Schemas/PermissionSchema';
 import { RoleEntity } from './Infrastructure/Schemas/RoleSchema';
 import { TenantEntity } from './Infrastructure/Schemas/TenantSchema';
@@ -21,7 +21,6 @@ import { CreateSuperUserCliCommand } from './Presentation/Commands/CreateSuperUs
 import { SyncRolesCliCommand } from './Presentation/Commands/SyncRolesCliCommand';
 import { AuthControllers } from './Presentation/Controllers';
 import { AuthGuard } from './Presentation/Guards/AuthGuard';
-import { PasswordRecoveryTokenEntity } from './Infrastructure/Schemas/PasswordRecoveryTokenSchema';
 
 @Global()
 @Module({

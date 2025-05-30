@@ -48,7 +48,7 @@ describe('CreateSuperUserUseCase - Integration Test', () =>
 
   describe('execute', () =>
   {
-    const expectTenantData = (userDomain: any, expected: { name: string; slug: string; id?: string }) =>
+    const expectTenantData = (userDomain: any, expected: { name: string; slug: string; id?: number }) =>
     {
       const tenant = userDomain.tenants?.[0];
       expect(tenant).toBeDefined();
@@ -61,7 +61,7 @@ describe('CreateSuperUserUseCase - Integration Test', () =>
     };
 
     const expectUserHasRole = async(
-      userId: string,
+      userId: number,
       expectedRoleName: string,
       roleRepo: RoleRepository,
       userRoleRepo: UserRoleRepository
@@ -82,10 +82,10 @@ describe('CreateSuperUserUseCase - Integration Test', () =>
       const user = await userRepository.findOneBy({ username : 'superadmin@node.com' });
       expect(user?.username).toBe('superadmin@node.com');
 
-      const userDomain = await userRepository.findUserWithRelations(user?.id as string);
+      const userDomain = await userRepository.findUserWithRelations(user?.id as number);
 
       expectTenantData(userDomain, { name: 'System', slug: 'system' });
-      await expectUserHasRole(user?.id as string, Roles.SUPER_ADMIN, roleRepository, userRoleRepository);
+      await expectUserHasRole(user?.id as number, Roles.SUPER_ADMIN, roleRepository, userRoleRepository);
     });
 
     it('should create a super admin user with custom values when config is provided', async() =>
@@ -97,7 +97,7 @@ describe('CreateSuperUserUseCase - Integration Test', () =>
       const user = await userRepository.findOneBy({ username:  superUserConfig.username });
       expect(user?.username).toBe(superUserConfig.username);
 
-      const userDomain = await userRepository.findUserWithRelations(user?.id as string);
+      const userDomain = await userRepository.findUserWithRelations(user?.id as number);
       const isPasswordValid = await hashService.compare(superUserConfig.password, user?.password as string);
       expect(isPasswordValid).toBe(true);
 
@@ -106,7 +106,7 @@ describe('CreateSuperUserUseCase - Integration Test', () =>
         slug: superUserConfig.tenantSlug
       });
 
-      await expectUserHasRole(user?.id as string, Roles.SUPER_ADMIN, roleRepository, userRoleRepository);
+      await expectUserHasRole(user?.id as number, Roles.SUPER_ADMIN, roleRepository, userRoleRepository);
     });
 
     it('should use existing tenant if it already exists', async() =>
@@ -127,7 +127,7 @@ describe('CreateSuperUserUseCase - Integration Test', () =>
       await createSuperUserUseCase.execute(superUserConfig);
 
       const user = await userRepository.findOneBy({ username : superUserConfig.username });
-      const userDomain = await userRepository.findUserWithRelations(user?.id as string);
+      const userDomain = await userRepository.findUserWithRelations(user?.id as number);
 
       expectTenantData(userDomain, {
         name: 'Existing Tenant',
@@ -191,7 +191,7 @@ describe('CreateSuperUserUseCase - Integration Test', () =>
       expect(user?.password).toBeTruthy();
       expect(user?.password.length).toBeGreaterThan(0);
 
-      const userDomain = await userRepository.findUserWithRelations(user?.id as string);
+      const userDomain = await userRepository.findUserWithRelations(user?.id as number);
       expectTenantData(userDomain, {
         name: superUserConfig.tenantName,
         slug: superUserConfig.tenantSlug

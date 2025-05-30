@@ -10,7 +10,7 @@ export class GetUserUseCase
     private readonly userRepository: UserRepository
   ) {}
 
-  async execute(userId: string): Promise<UserDomain>
+  async execute(userId: number): Promise<UserDomain>
   {
     return this.userRepository.findUserWithRelations(userId);
   }

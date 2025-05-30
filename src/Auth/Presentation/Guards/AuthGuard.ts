@@ -98,7 +98,7 @@ export class AuthGuard implements CanActivate
     return null;
   }
 
-  private async getUserPermissions(userId: string): Promise<string[]>
+  private async getUserPermissions(userId: number): Promise<string[]>
   {
     const userRoles = await this.userRoleRepository.getUserRoles(userId);
 

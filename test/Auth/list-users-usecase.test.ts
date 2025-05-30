@@ -18,7 +18,7 @@ describe('listUsersUseCase', () =>
   let tenantRepository: TenantRepository;
   let userRepository: UserRepository;
   let syncRolesUseCase: SyncRolesUseCase;
-  let tenantId: string;
+  let tenantId: number;
   let criteria: UserCriteria;
 
   beforeAll(async() =>
@@ -131,8 +131,6 @@ describe('listUsersUseCase', () =>
         expect(result.data).toBeInstanceOf(Array);
         expect(result.nextPage).toBeDefined();
         expect(result.prevPage).toBeDefined();
-
-        console.log(result.data);
 
         for (let i = 0; i < result.data.length - 1; i++)
         {

@@ -16,7 +16,7 @@ export class UserTenantRepository extends BaseTypeOrmRepositoryImpl<UserTenantPa
     super(userTenantRepository, 'UserTenantEntity');
   }
 
-  async findByUserAndTenant(userId: string, tenantId: string): Promise<UserTenantDomain | null>
+  async findByUserAndTenant(userId: number, tenantId: number): Promise<UserTenantDomain | null>
   {
     try
     {
@@ -34,7 +34,7 @@ export class UserTenantRepository extends BaseTypeOrmRepositoryImpl<UserTenantPa
     }
   }
 
-  async findUserTenants(userId: string): Promise<UserTenantDomain[]>
+  async findUserTenants(userId: number): Promise<UserTenantDomain[]>
   {
     try
     {
@@ -49,7 +49,7 @@ export class UserTenantRepository extends BaseTypeOrmRepositoryImpl<UserTenantPa
     }
   }
 
-  async getDefaultTenant(userId: string): Promise<UserTenantDomain | null>
+  async getDefaultTenant(userId: number): Promise<UserTenantDomain | null>
   {
     try
     {
@@ -67,7 +67,7 @@ export class UserTenantRepository extends BaseTypeOrmRepositoryImpl<UserTenantPa
     }
   }
 
-  async setDefaultTenant(userId: string, tenantId: string): Promise<void>
+  async setDefaultTenant(userId: number, tenantId: number): Promise<void>
   {
     try
     {
@@ -109,7 +109,7 @@ export class UserTenantRepository extends BaseTypeOrmRepositoryImpl<UserTenantPa
   }
 
   // New method to delete a user-tenant relationship
-  async deleteUserTenant(userId: string, tenantId: string): Promise<void>
+  async deleteUserTenant(userId: number, tenantId: number): Promise<void>
   {
     try
     {

@@ -28,12 +28,7 @@ export class TenantRepository extends BaseTypeOrmRepositoryImpl<TenantPayload, T
     }
   }
 
-  /**
-   * Find multiple tenants by their IDs
-   * @param ids Array of tenant IDs to find
-   * @returns Array of tenant objects
-   */
-  async findByIds(ids: string[]): Promise<TenantDomain[]>
+  async findByIds(ids: number[]): Promise<TenantDomain[]>
   {
     try
     {

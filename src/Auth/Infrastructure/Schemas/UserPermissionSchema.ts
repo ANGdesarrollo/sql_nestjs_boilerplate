@@ -1,4 +1,10 @@
-import { Entity, PrimaryGeneratedColumn, ManyToOne, JoinColumn, CreateDateColumn } from 'typeorm';
+import {
+  Entity,
+  PrimaryColumn,
+  CreateDateColumn,
+  ManyToOne,
+  JoinColumn
+} from 'typeorm';
 
 import { PermissionEntity } from './PermissionSchema';
 import { UserEntity } from './UserSchema';
@@ -6,14 +12,17 @@ import { UserEntity } from './UserSchema';
 @Entity('user_permissions')
 export class UserPermissionEntity
 {
-  @PrimaryGeneratedColumn('uuid')
-    id: string;
+  @PrimaryColumn({ name: 'user_id', type: 'int' })
+    userId: number;
 
-  @ManyToOne(() => UserEntity, { onDelete: 'CASCADE' })
+  @PrimaryColumn({ name: 'permission_id', type: 'int' })
+    permissionId: number;
+
+  @ManyToOne(() => UserEntity, { onDelete: 'CASCADE', nullable: false })
   @JoinColumn({ name: 'user_id' })
     user: UserEntity;
 
-  @ManyToOne(() => PermissionEntity, { onDelete: 'CASCADE' })
+  @ManyToOne(() => PermissionEntity, { onDelete: 'CASCADE', nullable: false })
   @JoinColumn({ name: 'permission_id' })
     permission: PermissionEntity;
 

@@ -35,7 +35,7 @@ export class AuthGetController
   @Get('users/:userId')
   @UseGuards(AuthGuard)
   @RequirePermissions(Permissions.USER.READ)
-  async getUser(@Param('userId') userId: string)
+  async getUser(@Param('userId') userId: number)
   {
     return this.getUserUseCase.execute(userId);
   }

@@ -3,8 +3,8 @@ import { z } from 'zod';
 export const CreateUserPayloadSchema = z.object({
   username: z.string().min(3, { message: 'Username must be at least 3 characters long' }),
   password: z.string().min(6, { message: 'Password must be at least 6 characters long' }),
-  tenantIds: z.array(z.string().uuid({ message: 'Tenant ID must be a valid UUID' })),
-  defaultTenantId: z.string().uuid({ message: 'Default tenant ID must be a valid UUID' })
+  tenantIds: z.array(z.number({ message: 'Tenant ID must be a valid id' })),
+  defaultTenantId: z.number({ message: 'Default tenant ID must be a valid number' })
 }).refine(data =>
 {
   return data.tenantIds.includes(data.defaultTenantId);

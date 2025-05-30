@@ -11,13 +11,13 @@ export class RoleRepository extends BaseTypeOrmRepositoryImpl<RolePayload, RoleD
 {
   constructor(
     @Inject('ROLE_REPOSITORY')
-      roleRepository: Repository<RoleDomain>
+      repository: Repository<RoleDomain>
   )
   {
-    super(roleRepository, 'RoleEntity');
+    super(repository, 'RoleEntity');
   }
 
-  async updateRolePermissions(id: string, permissions: PermissionDomain[]): Promise<void>
+  async updateRolePermissions(id: number, permissions: PermissionDomain[]): Promise<void>
   {
     const role = await this.repository.findOne({
       where: { id },

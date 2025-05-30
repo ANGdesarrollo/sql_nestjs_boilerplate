@@ -22,14 +22,13 @@ import { UploadFileUseCase } from '../../Application/UploadFileUseCase';
 export class FileGetController
 {
   constructor(
-    private readonly uploadFileUseCase: UploadFileUseCase,
     private readonly downloadFileUseCase: DownloadFileUseCase,
     private readonly getFileUseCase: GetFileUseCase
   ) {}
 
   @Get(':id')
   @UseGuards(AuthGuard)
-  async getFile(@Param('id') id: string)
+  async getFile(@Param('id') id: number)
   {
     try
     {
@@ -59,7 +58,7 @@ export class FileGetController
   @Get(':id/download')
   @UseGuards(AuthGuard)
   async downloadFile(
-    @Param('id') id: string,
+    @Param('id') id: number,
     @Req() request: RequestWithUserPayload,
     @Res() reply: FastifyReply
   )

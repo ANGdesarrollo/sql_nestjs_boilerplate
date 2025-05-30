@@ -30,7 +30,7 @@ export class PasswordRecoveryTokenRepository extends BaseTypeOrmRepositoryImpl<P
     }
   }
 
-  async markAsUsed(id: string): Promise<void>
+  async markAsUsed(id: number): Promise<void>
   {
     try
     {
@@ -42,7 +42,7 @@ export class PasswordRecoveryTokenRepository extends BaseTypeOrmRepositoryImpl<P
     }
   }
 
-  async invalidateUserTokens(userId: string): Promise<void>
+  async invalidateUserTokens(userId: number): Promise<void>
   {
     try
     {

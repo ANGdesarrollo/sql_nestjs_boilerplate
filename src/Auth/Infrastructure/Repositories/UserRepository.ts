@@ -20,7 +20,7 @@ export class UserRepository extends BaseTypeOrmRepositoryImpl<UserPayload, UserT
     super(userRepository, 'UserEntity');
   }
 
-  async findUserWithRelations(userId: string): Promise<UserDomain>
+  async findUserWithRelations(userId: number): Promise<UserDomain>
   {
     const userWithRelations = await this.repository.findOne({
       where: { id: userId },
