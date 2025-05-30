@@ -2,24 +2,34 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { addHours } from 'date-fns';
 import { v4 as uuidv4 } from 'uuid';
+import { z } from 'zod';
 
 import { PasswordRecoveryEvent } from '../../Shared/Events/Auth/PasswordRecovery/PasswordRecoveryEvent';
 import { Event } from '../../Shared/Events/Event';
+import { Validator } from '../../Shared/Presentation/Validations/Validator';
+import { RequestPasswordRecoveryPayload } from '../Domain/Payloads/RequestPasswordRecoveryPayload';
 import { PasswordRecoveryTokenRepository } from '../Infrastructure/Repositories/PasswordRecoveryTokenRepository';
 import { UserRepository } from '../Infrastructure/Repositories/UserRepository';
+import { RequestPasswordRecoveryValidator } from '../Presentation/Validations/RequestPasswordRecoveryValidator';
+
 
 @Injectable()
-export class RequestPasswordRecoveryUseCase
+export class RequestPasswordRecoveryUseCase extends Validator<RequestPasswordRecoveryPayload>
 {
   constructor(
     private readonly userRepository: UserRepository,
     private readonly tokenRepository: PasswordRecoveryTokenRepository,
     private readonly eventEmitter: EventEmitter2
-  ) {}
+  )
+  {
+    super(RequestPasswordRecoveryValidator);
+  }
 
   async execute(email: string): Promise<void>
   {
-    const user = await this.userRepository.findOneBy({ username : email });
+    const { email: validatedEmail } = this.validate({ email });
+
+    const user = await this.userRepository.findOneBy({ username : validatedEmail });
 
     if (!user)
     {

@@ -1,26 +1,34 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 
+import { Validator } from '../../Shared/Presentation/Validations/Validator';
 import { JwtPayload } from '../Domain/Payloads/JwtPayload';
 import { LoginUserPayload } from '../Domain/Payloads/LoginUserPayload';
 import { HashService } from '../Domain/Services/HashService';
 import { UserRepository } from '../Infrastructure/Repositories/UserRepository';
 import { UserTenantRepository } from '../Infrastructure/Repositories/UserTenantRepository';
+import { LoginUserValidator } from '../Presentation/Validations/LoginUserValidator';
+
 
 @Injectable()
-export class LoginUserUseCase
+export class LoginUserUseCase extends Validator<LoginUserPayload>
 {
   constructor(
     private readonly userRepository: UserRepository,
     private readonly userTenantRepository: UserTenantRepository,
     private readonly jwtService: JwtService,
     private readonly hashService: HashService
-  ) {}
+  )
+  {
+    super(LoginUserValidator);
+  }
 
   async execute(body: LoginUserPayload)
   {
-    const user = await this.findUser(body.username);
-    await this.comparePassword(user.password, body.password);
+    const validatedBody = this.validate(body);
+
+    const user = await this.findUser(validatedBody.username);
+    await this.comparePassword(user.password, validatedBody.password);
 
     const defaultUserTenant = await this.userTenantRepository.getDefaultTenant(user.id);
     if (!defaultUserTenant)

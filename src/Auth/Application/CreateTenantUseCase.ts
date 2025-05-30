@@ -5,14 +5,14 @@ import { Validator } from '../../Shared/Presentation/Validations/Validator';
 import { CreateTenantPayload } from '../Domain/Payloads/CreateTenantPayload';
 import { TenantPayload } from '../Domain/Payloads/TenantPayload';
 import { TenantRepository } from '../Infrastructure/Repositories/TenantRepository';
-import { TenantPayloadSchema } from '../Presentation/Validations/TenantSchema';
+import { TenantValidator } from '../Presentation/Validations/TenantValidator';
 
 @Injectable()
 export class CreateTenantUseCase extends Validator<CreateTenantPayload>
 {
   constructor(private readonly tenantRepository: TenantRepository)
   {
-    super(TenantPayloadSchema.omit({ id: true }));
+    super(TenantValidator.omit({ id: true }));
   }
 
   async execute(payload: CreateTenantPayload): Promise<void>

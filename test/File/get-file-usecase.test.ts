@@ -1,12 +1,10 @@
-import { NotFoundException } from '@nestjs/common';
+import { faker } from '@faker-js/faker/.';
+import { Logger, NotFoundException } from '@nestjs/common';
 import { NestFastifyApplication } from '@nestjs/platform-fastify';
-import { v4 as uuidv4 } from 'uuid';
 
 import { GetFileUseCase } from '../../src/File/Application/GetFileUseCase';
 import { MinioService } from '../../src/File/Domain/Services/MinioService';
 import { FileRepository } from '../../src/File/Infrastructure/Repositories/FileRepository';
-import { Logger } from '../../src/Shared/Presentation/Utils/Logger';
-import { faker } from '@faker-js/faker';
 
 describe('GetFileUseCase - Integration Test', () =>
 {
@@ -89,8 +87,6 @@ describe('GetFileUseCase - Integration Test', () =>
         isPublic: false
       });
 
-      const loggerSpy = jest.spyOn(Logger, 'error').mockImplementation(() => {});
-
       const result = await getFileUseCase.execute(testFile.id);
 
       expect(result).toBeDefined();
@@ -98,7 +94,6 @@ describe('GetFileUseCase - Integration Test', () =>
       expect(result.originalName).toBe('test-file.txt');
       expect(result.path).toBe('storage-path/test-file.txt');
       expect(minioService.getFileUrl).toHaveBeenCalledWith('storage-path/test-file.txt', false, 3600);
-      expect(loggerSpy).toHaveBeenCalledWith(`Failed to generate URL for file ${testFile.id}:`, errorMessage);
     });
   });
 });

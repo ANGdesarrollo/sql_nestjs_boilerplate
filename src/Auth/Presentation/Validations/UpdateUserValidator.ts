@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-export const UpdateUserPayloadSchema = z.object({
+export const UpdateUserPayloadValidator = z.object({
   id: z.number({ message: 'User ID must be a valid id' }),
   username: z.string()
     .min(3, { message: 'Username must be at least 3 characters long' })

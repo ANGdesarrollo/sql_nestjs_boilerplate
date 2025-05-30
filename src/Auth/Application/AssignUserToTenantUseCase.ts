@@ -1,28 +1,29 @@
 import { Injectable, NotFoundException, ConflictException } from '@nestjs/common';
 
+import { Validator } from '../../Shared/Presentation/Validations/Validator';
 import { UserTenantDomain } from '../Domain/Entities/UserTenantDomain';
+import { AssignUserToTenantPayload } from '../Domain/Payloads/AssignUserToTenantPayload';
 import { TenantRepository } from '../Infrastructure/Repositories/TenantRepository';
 import { UserRepository } from '../Infrastructure/Repositories/UserRepository';
 import { UserTenantRepository } from '../Infrastructure/Repositories/UserTenantRepository';
+import { AssignUserToTenantSchema } from '../Presentation/Validations/AssignUserToTenantSchema';
 
-interface AssignUserToTenantParams {
-  userId: number;
-  tenantId: number;
-  setAsDefault?: boolean;
-}
 
 @Injectable()
-export class AssignUserToTenantUseCase
+export class AssignUserToTenantUseCase extends Validator<AssignUserToTenantPayload>
 {
   constructor(
     private readonly userRepository: UserRepository,
     private readonly tenantRepository: TenantRepository,
     private readonly userTenantRepository: UserTenantRepository
-  ) {}
-
-  async execute(params: AssignUserToTenantParams): Promise<UserTenantDomain>
+  )
   {
-    const { userId, tenantId, setAsDefault = false } = params;
+    super(AssignUserToTenantSchema);
+  }
+
+  async execute(params: AssignUserToTenantPayload): Promise<UserTenantDomain>
+  {
+    const { userId, tenantId, setAsDefault } = this.validate(params);
 
     const user = await this.userRepository.findOneBy({ id : userId });
     if (!user)

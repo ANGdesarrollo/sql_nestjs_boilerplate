@@ -1,5 +1,8 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 
+import { BaseId } from '../../Shared/Domain/Entities/BaseId';
+import { IdValidator } from '../../Shared/Presentation/Validations/IdValidator';
+import { Validator } from '../../Shared/Presentation/Validations/Validator';
 import { TenantDomain } from '../Domain/Entities/TenantDomain';
 import { UserDomain } from '../Domain/Entities/UserDomain';
 import { UserPermissionRepository } from '../Infrastructure/Repositories/UserPermissionRepository';
@@ -11,29 +14,32 @@ type TenantInfo = Pick<TenantDomain, 'id' | 'name' | 'slug'> & { isDefault: bool
 type UserInfo = Pick<UserDomain, 'id' | 'username' | 'createdAt' | 'updatedAt'>;
 
 @Injectable()
-export class GetMeUseCase
+export class GetMeUseCase extends Validator<BaseId>
 {
   constructor(
     private readonly userRepository: UserRepository,
     private readonly userRoleRepository: UserRoleRepository,
     private readonly userTenantRepository: UserTenantRepository,
     private readonly userPermissionRepository: UserPermissionRepository
-  ) {}
+  )
+  {
+    super(IdValidator);
+  }
 
-  async execute(userId: number): Promise<{
+  async execute(id: number): Promise<{
     user: UserInfo;
     roles: string[];
     permissions: string[];
     tenants: TenantInfo[];
   }>
   {
-    const user = await this.userRepository.findOneBy({  id: userId });
+    const user = await this.userRepository.findOneBy({  id });
     if (!user)
     {
-      throw new NotFoundException(`User with ID ${userId} not found`);
+      throw new NotFoundException(`User with ID ${id} not found`);
     }
 
-    const userRoles = await this.userRoleRepository.getUserRoles(userId);
+    const userRoles = await this.userRoleRepository.getUserRoles(id);
     const roles = userRoles.map(ur => ur.role.name);
 
     const permissionsSet = new Set<string>();
@@ -46,13 +52,13 @@ export class GetMeUseCase
       });
     });
 
-    const directPermissions = await this.userPermissionRepository.getUserPermissions(userId);
+    const directPermissions = await this.userPermissionRepository.getUserPermissions(id);
     directPermissions.forEach(up =>
     {
       permissionsSet.add(up.permission.name);
     });
 
-    const userTenants = await this.userTenantRepository.findUserTenants(userId);
+    const userTenants = await this.userTenantRepository.findUserTenants(id);
 
     const tenants: TenantInfo[] = userTenants.map(ut => ({
       id: ut.tenant.id,

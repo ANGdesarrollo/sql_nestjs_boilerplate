@@ -6,14 +6,14 @@ import { TenantDomain } from '../Domain/Entities/TenantDomain';
 import { TenantPayload } from '../Domain/Payloads/TenantPayload';
 import { UpdateTenantPayload } from '../Domain/Payloads/UpdateTenantPayload';
 import { TenantRepository } from '../Infrastructure/Repositories/TenantRepository';
-import { TenantPayloadSchema } from '../Presentation/Validations/TenantSchema';
+import { TenantValidator } from '../Presentation/Validations/TenantValidator';
 
 @Injectable()
 export class UpdateTenantUseCase extends Validator<UpdateTenantPayload>
 {
   constructor(private readonly tenantRepository: TenantRepository)
   {
-    super(TenantPayloadSchema);
+    super(TenantValidator);
   }
 
   async execute(payload: UpdateTenantPayload): Promise<TenantDomain>

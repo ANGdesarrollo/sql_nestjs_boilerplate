@@ -9,7 +9,7 @@ import { HashService } from '../Domain/Services/HashService';
 import { TenantRepository } from '../Infrastructure/Repositories/TenantRepository';
 import { UserRepository } from '../Infrastructure/Repositories/UserRepository';
 import { UserTenantRepository } from '../Infrastructure/Repositories/UserTenantRepository';
-import { UpdateUserPayloadSchema } from '../Presentation/Validations/UpdateUserSchema';
+import { UpdateUserPayloadValidator } from '../Presentation/Validations/UpdateUserValidator';
 
 @Injectable()
 export class UpdateUserUseCase extends Validator<UpdateUserPayload>
@@ -22,7 +22,7 @@ export class UpdateUserUseCase extends Validator<UpdateUserPayload>
     @Inject('DATA_SOURCE') private readonly dataSource: DataSource
   )
   {
-    super(UpdateUserPayloadSchema);
+    super(UpdateUserPayloadValidator);
   }
 
   async execute(payload: UpdateUserPayload): Promise<UserDomain>

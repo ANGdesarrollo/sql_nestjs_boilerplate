@@ -12,7 +12,7 @@ import { TenantRepository } from '../Infrastructure/Repositories/TenantRepositor
 import { UserRepository } from '../Infrastructure/Repositories/UserRepository';
 import { UserRoleRepository } from '../Infrastructure/Repositories/UserRoleRepository';
 import { UserTenantRepository } from '../Infrastructure/Repositories/UserTenantRepository';
-import { CreateUserPayloadSchema } from '../Presentation/Validations/CreateUserSchema';
+import { CreateUserPayloadValidator } from '../Presentation/Validations/CreateUserValidator';
 
 @Injectable()
 export class CreateUserUseCase extends Validator<CreateUserPayload>
@@ -27,7 +27,7 @@ export class CreateUserUseCase extends Validator<CreateUserPayload>
     @Inject('DATA_SOURCE') private readonly dataSource: DataSource
   )
   {
-    super(CreateUserPayloadSchema);
+    super(CreateUserPayloadValidator);
   }
 
   async execute(payload: CreateUserPayload): Promise<void>

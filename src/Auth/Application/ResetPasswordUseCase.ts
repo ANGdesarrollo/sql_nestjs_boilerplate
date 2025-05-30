@@ -1,27 +1,30 @@
-import { Injectable, BadRequestException } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { isBefore } from 'date-fns';
 
+import { Validator } from '../../Shared/Presentation/Validations/Validator';
+import { ResetPasswordPayload } from '../Domain/Payloads/ResetPasswordPayload';
 import { HashService } from '../Domain/Services/HashService';
 import { PasswordRecoveryTokenRepository } from '../Infrastructure/Repositories/PasswordRecoveryTokenRepository';
 import { UserRepository } from '../Infrastructure/Repositories/UserRepository';
+import { ResetPasswordValidator } from '../Presentation/Validations/ResetPasswordValidator';
 
-interface ResetPasswordParams {
-  token: string;
-  password: string;
-}
 
 @Injectable()
-export class ResetPasswordUseCase
+export class ResetPasswordUseCase extends Validator<ResetPasswordPayload>
 {
   constructor(
     private readonly userRepository: UserRepository,
     private readonly tokenRepository: PasswordRecoveryTokenRepository,
     private readonly hashService: HashService
-  ) {}
-
-  async execute({ token, password }: ResetPasswordParams): Promise<void>
+  )
   {
-    // Find the token
+    super(ResetPasswordValidator);
+  }
+
+  async execute(params: ResetPasswordPayload): Promise<void>
+  {
+    const { token, password } = this.validate(params);
+
     const recoveryToken = await this.tokenRepository.findByToken(token);
 
     if (!recoveryToken)
